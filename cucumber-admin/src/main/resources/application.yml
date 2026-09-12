@@ -1,0 +1,55 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: cucumber-admin
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/cucumber_db}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:guest}
+    password: ${SPRING_RABBITMQ_PASSWORD:guest}
+    listener:
+      simple:
+        auto-startup: ${MQ_ENABLED:false}
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    banner: false
+
+jwt:
+  secret: ${JWT_SECRET:cucumber-diagnosis-platform-jwt-secret-key-2026}
+  expire-minutes: ${JWT_EXPIRE_MINUTES:720}
+
+ai:
+  base-url: ${AI_BASE_URL:http://localhost:8000}
+
+agent:
+  base-url: ${AGENT_BASE_URL:http://localhost:8002}
+
+upload:
+  dir: ${UPLOAD_DIR:./uploads}
+
+mq:
+  enabled: ${MQ_ENABLED:false}

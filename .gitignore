@@ -1,0 +1,30 @@
+# ---- Java / Maven ----
+cucumber-admin/target/
+cucumber-admin/uploads/
+
+# ---- Python ----
+cucumber-ai/.venv/
+cucumber-ai/__pycache__/
+cucumber-ai/**/__pycache__/
+cucumber-ai/.pytest_cache/
+cucumber-ai/.env
+cucumber-ai/weights/
+
+# ---- cucumber-agent（EchoMind 二开智能体服务） ----
+cucumber-agent/.env
+cucumber-agent/.venv/
+cucumber-agent/**/__pycache__/
+cucumber-agent/**/.pytest_cache/
+cucumber-agent/echomind/data/chroma/
+cucumber-agent/echomind/data/eval/
+cucumber-agent/echomind/logs/
+cucumber-agent/server.log
+
+# ---- Node ----
+cucumber-web/node_modules/
+cucumber-web/dist/
+
+# ---- IDE / OS ----
+.idea/
+.vscode/
+.DS_Store

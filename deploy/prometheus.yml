@@ -1,0 +1,11 @@
+# Prometheus 配置（可选，compose profiles: ["monitor"] 启动）
+# 抓取 cucumber-agent 的 /metrics（FastAPI prometheus-client 暴露）
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: cucumber-agent
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["cucumber-agent:8002"]

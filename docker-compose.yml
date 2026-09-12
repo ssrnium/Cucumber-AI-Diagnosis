@@ -1,0 +1,158 @@
+name: cucumber-diagnosis-platform
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: cucumber-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: cucumber_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./cucumber-admin/src/main/resources/db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d cucumber_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: cucumber-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: cucumber-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  cucumber-ai:
+    build: ./cucumber-ai
+    container_name: cucumber-ai
+    environment:
+      LLM_PROVIDER: mock
+      KIMI_API_KEY: ${KIMI_API_KEY:-}
+    ports:
+      - "8000:8000"
+
+  cucumber-admin:
+    build: ./cucumber-admin
+    container_name: cucumber-admin
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/cucumber_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+      AI_BASE_URL: http://cucumber-ai:8000
+      AGENT_BASE_URL: http://cucumber-agent:8002
+      UPLOAD_DIR: /data/uploads
+      JWT_SECRET: cucumber-diagnosis-platform-jwt-secret-key-2026
+      SVC_AGENT_PASSWORD: ${SVC_AGENT_PASSWORD:-SvcAgent@123}
+      MQ_ENABLED: "true"
+    ports:
+      - "8080:8080"
+    volumes:
+      - uploaddata:/data/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      cucumber-ai:
+        condition: service_started
+
+  cucumber-web:
+    build: ./cucumber-web
+    container_name: cucumber-web
+    ports:
+      - "8088:80"
+    depends_on:
+      - cucumber-admin
+
+  chromadb:
+    image: chromadb/chroma:0.5.23
+    container_name: cucumber-chromadb
+    ports:
+      - "8100:8000"
+    volumes:
+      - chromadata:/chroma/chroma
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request;urllib.request.urlopen('http://localhost:8000/api/v1/heartbeat',timeout=5)\" || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+
+  cucumber-agent:
+    build:
+      context: ./cucumber-agent/echomind
+      target: production
+    container_name: cucumber-agent
+    environment:
+      # Anthropic 兼容协议（DeepSeek）：API Key 由用户填写，不进仓库
+      ANTHROPIC_BASE_URL: ${ANTHROPIC_BASE_URL:-https://api.deepseek.com/anthropic}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-deepseek-flash}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      REDIS_URL: redis://redis:6379/0
+      CHROMA_HOST: chromadb
+      CHROMA_PORT: "8000"
+      CHROMA_PERSIST_DIRECTORY: /app/data/chroma
+      CUCUMBER_ADMIN_URL: http://cucumber-admin:8080
+      CUCUMBER_AI_URL: http://cucumber-ai:8000
+      AGENT_SERVICE_USERNAME: svc-agent
+      AGENT_SERVICE_PASSWORD: ${SVC_AGENT_PASSWORD:-SvcAgent@123}
+      API_PORT: "8002"
+    ports:
+      - "8002:8002"
+    volumes:
+      - agentdata:/app/data
+    depends_on:
+      redis:
+        condition: service_healthy
+      chromadb:
+        condition: service_started
+      cucumber-admin:
+        condition: service_started
+      cucumber-ai:
+        condition: service_started
+
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    container_name: cucumber-prometheus
+    profiles: ["monitor"]
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./deploy/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+
+volumes:
+  pgdata:
+  redisdata:
+  uploaddata:
+  chromadata:
+  agentdata:
