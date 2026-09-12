@@ -140,6 +140,10 @@ public class DiagnosisController {
             Map<String, Object> report = aiServiceClient.diagnose(detections);
             record.setDetections(detections);
             record.setReport(report);
+            Object inferenceMs = detectResponse.get("inference_ms");
+            if (inferenceMs instanceof Number) {
+                record.setInferenceMs(((Number) inferenceMs).doubleValue());
+            }
             record.setStatus("DONE");
             diagnosisRecordMapper.insert(record);
             return Result.success(record);

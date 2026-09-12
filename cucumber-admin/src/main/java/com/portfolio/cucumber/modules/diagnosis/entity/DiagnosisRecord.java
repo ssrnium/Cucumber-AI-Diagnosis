@@ -37,4 +37,8 @@ public class DiagnosisRecord {
     /** 非持久化：重复提交命中已有记录时置 true，供前端提示"已为你打开原记录" */
     @TableField(exist = false)
     private Boolean duplicated;
+
+    /** 非持久化：本次推理耗时（毫秒），仅诊断当次响应展示 */
+    @TableField(exist = false)
+    private Double inferenceMs;
 }

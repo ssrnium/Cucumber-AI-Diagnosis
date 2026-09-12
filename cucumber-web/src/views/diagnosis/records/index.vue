@@ -46,6 +46,9 @@
         <el-descriptions :column="2" border>
           <el-descriptions-item label="记录编号">{{ detail.record_no }}</el-descriptions-item>
           <el-descriptions-item label="模型版本">{{ detail.model_version }}</el-descriptions-item>
+          <el-descriptions-item v-if="detail.inference_ms" label="推理耗时">
+            {{ detail.inference_ms.toFixed(0) }} ms
+          </el-descriptions-item>
           <el-descriptions-item label="状态">
             <el-tag :type="statusType(detail.status)">{{ statusText(detail.status) }}</el-tag>
           </el-descriptions-item>

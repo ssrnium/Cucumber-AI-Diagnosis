@@ -16,6 +16,8 @@ class Detection(BaseModel):
 
 class DetectResponse(BaseModel):
     detections: List[Detection]
+    inference_ms: float = Field(default=0.0, description="推理耗时（毫秒），Mock 路径为 0")
+    model_version: str = Field(default="mock-detector", description="实际参与推理的模型版本标识")
 
 
 class DiagnoseRequest(BaseModel):
