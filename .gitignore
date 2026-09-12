@@ -8,7 +8,8 @@ cucumber-ai/__pycache__/
 cucumber-ai/**/__pycache__/
 cucumber-ai/.pytest_cache/
 cucumber-ai/.env
-cucumber-ai/weights/
+cucumber-ai/weights/*
+!cucumber-ai/weights/E2_gfix.pt
 
 # ---- cucumber-agent（EchoMind 二开智能体服务） ----
 cucumber-agent/.env
