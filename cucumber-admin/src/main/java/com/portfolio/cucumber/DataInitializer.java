@@ -1,6 +1,8 @@
 package com.portfolio.cucumber;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.portfolio.cucumber.modules.knowledge.entity.KnowledgeEntry;
 import com.portfolio.cucumber.modules.knowledge.mapper.KnowledgeEntryMapper;
 import com.portfolio.cucumber.modules.system.entity.SysRole;
@@ -15,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -131,29 +134,22 @@ public class DataInitializer implements ApplicationRunner {
     }
 
     /**
-     * 示例知识库：与 cucumber-ai/data/disease_knowledge.json 同结构、同 source_id。
+     * 知识库种子：加载 db/knowledge_seed.json（由 cucumber-ai 的论文嵌套知识库聚合生成，
+     * 28 个真实 source_id，与诊断报告的 source_ids 引用一致，支撑来源追溯）。
      */
     private void seedKnowledge() {
-        createKnowledge("KB-JC-001", "炭疽病", "黄瓜炭疽病症状识别",
-                "叶片初期出现水渍状小斑点，后扩大为圆形至不规则形褐色病斑，边缘有黄色晕圈，"
-                        + "严重时病斑中央穿孔。茎蔓受害呈梭形凹陷斑。高湿环境下病斑上产生粉红色黏质孢子堆。",
-                "A", "症状");
-        createKnowledge("KB-SH-002", "霜霉病", "黄瓜霜霉病症状识别",
-                "叶片正面出现多角形淡黄色至黄褐色病斑，受叶脉限制呈角状；叶背对应位置在清晨或高湿时"
-                        + "长出灰黑色至紫灰色霉层。病害自下而上扩展，严重时全叶枯死。",
-                "A", "症状");
-        createKnowledge("KB-MK-003", "蔓枯病", "黄瓜蔓枯病症状识别",
-                "叶片多从叶缘开始发病，形成 V 字形或不规则形大斑，黄褐色，上有轮纹并散生小黑点；"
-                        + "茎蔓受害呈油渍状纵裂，溢出琥珀色胶状物，后期病部干枯。",
-                "B", "症状");
-        createKnowledge("KB-BF-004", "白粉病", "黄瓜白粉病防治",
-                "发病初期叶面出现白色近圆形粉斑，扩展后连片呈白粉状。防治以选用抗病品种、合理密植、"
-                        + "控制氮肥为主；发病初期可喷施醚菌酯、氟硅唑或硫磺悬浮剂，注意轮换用药。",
-                "A", "防治");
-        createKnowledge("KB-JK-005", "健康叶", "健康黄瓜叶片特征",
-                "健康黄瓜叶片呈掌状五角形，叶色浓绿有光泽，叶面平展无病斑、无粉层、无霉层，"
-                        + "叶缘锯齿清晰，叶脉纹理正常。保持良好通风透光与水肥均衡是预防病害的基础。",
-                "B", "防治");
+        try {
+            ClassPathResource resource = new ClassPathResource("db/knowledge_seed.json");
+            List<KnowledgeEntry> entries = new ObjectMapper().readValue(
+                    resource.getInputStream(), new TypeReference<List<KnowledgeEntry>>() {
+                    });
+            for (KnowledgeEntry e : entries) {
+                createKnowledge(e.getSourceId(), e.getDiseaseType(), e.getTitle(),
+                        e.getContent(), e.getLevel(), e.getCategory());
+            }
+        } catch (Exception e) {
+            log.warn("知识库种子加载失败: {}", e.getMessage());
+        }
     }
 
     private void createKnowledge(String sourceId, String diseaseType, String title,

@@ -39,7 +39,7 @@ class Evidence(BaseModel):
 
 
 class DiagnosisReport(BaseModel):
-    """受控生成的诊断报告（五段式 + 来源追溯）。"""
+    """受控生成的诊断报告（五段式 + 来源追溯 + 不确定性与状态）。"""
 
     disease_type: str = Field(description="诊断结论病害类型")
     confidence: float = Field(ge=0.0, le=1.0)
@@ -48,3 +48,5 @@ class DiagnosisReport(BaseModel):
     chemical: List[str] = Field(description="化学防治")
     safety: List[str] = Field(description="安全注意事项")
     source_ids: List[str] = Field(description="引用的知识来源编号，必须来自检索结果")
+    uncertainty_note: Optional[str] = Field(default=None, description="低置信/类别冲突时的不确定性说明")
+    report_status: Optional[str] = Field(default=None, description="polished=LLM 润色通过 / fallback_to_skeleton=骨架回退")

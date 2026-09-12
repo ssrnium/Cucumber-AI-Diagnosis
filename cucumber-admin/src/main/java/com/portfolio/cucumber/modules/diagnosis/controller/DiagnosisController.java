@@ -146,6 +146,22 @@ public class DiagnosisController {
             }
             record.setStatus("DONE");
             diagnosisRecordMapper.insert(record);
+            // 低置信度自动转专家复核：检测最高置信度低于 0.75（含无检出）时自动创建待复核反馈单
+            double topConfidence = detections.stream()
+                    .mapToDouble(d -> ((Number) d.getOrDefault("confidence", 1.0)).doubleValue())
+                    .max().orElse(0.0);
+            if (topConfidence < 0.75) {
+                DiagnosisFeedback autoFeedback = new DiagnosisFeedback();
+                autoFeedback.setRecordId(record.getId());
+                autoFeedback.setUserId(uid);
+                autoFeedback.setVerdict("UNCERTAIN");
+                autoFeedback.setComment(String.format(
+                        "检测最高置信度 %.2f 低于 0.75，系统自动转入专家复核", topConfidence));
+                autoFeedback.setReviewStatus("PENDING");
+                autoFeedback.setCreateTime(LocalDateTime.now());
+                autoFeedback.setUpdateTime(LocalDateTime.now());
+                diagnosisFeedbackMapper.insert(autoFeedback);
+            }
             return Result.success(record);
         } catch (Exception e) {
             record.setStatus("FAILED");

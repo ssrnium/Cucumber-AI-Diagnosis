@@ -1,61 +1,56 @@
 # PROJECT_STATUS — 黄瓜叶片病害智能识别与可信辅助诊断平台
 
-> 更新日期：2026-09-12 ｜ 当前版本：**v0.2.0-real-model**（E2_gfix 论文冻结权重已接入并激活）
+> 更新日期：2026-09-12 ｜ 当前版本：**v0.3.0-controlled-generation**（论文受控生成已迁移，诊断主链路全部真实化）
 
 ## 状态速览
 
 | 项 | 当前状态 |
 |---|---|
-| 诊断是否为 Mock | **否（真实模型）**。检测：E2_gfix 论文冻结权重（sha256 `d9e4ce25…447db`，模型版本页登记为 `E2_gfix:ch4v22` ACTIVE）；报告生成：cucumber-ai 的 LLM 仍为 mock provider（真实 LLM 联调属下一阶段）；智能体服务使用真实 LLM（DeepSeek `deepseek-flash`） |
+| 诊断是否为 Mock | **否（全链路真实）**。检测：E2_gfix 论文冻结权重（`E2_gfix:ch4v22` ACTIVE）；报告：论文 agent_v1 受控生成流水线（六步），LLM 润色默认 **Kimi k3**（论文第六章同端点），12 项校验 + 确定性骨架回退；智能体：DeepSeek `deepseek-flash` |
 | 已验证运行环境 | Windows 11 本地：便携 PostgreSQL 16.10 + 便携 Redis 5.0.14 + JDK 17.0.2 + Node 24 + Python 3.9 venv（torch 2.8.0 + vendor ultralytics 8.4.90）；**Docker 未安装，compose 链路未验证** |
-| 已通过测试 | 浏览器主链路 17/17（d1_main.py）；异常场景 17/17（d2_exceptions.py）；ai pytest 2 passed；agent pytest 13 passed；admin `mvn package` BUILD SUCCESS；web `npm run build` 绿；真实模型浏览器验收（炭疽病 93.3%、耗时 64ms、真实版本展示） |
-| 真实模型冒烟 | test301 批量：301/301 有检出，耗时均值 57ms / p50 61ms / 最大 162ms（CPU）；top1 类别一致 285/301=94.7%（运维口径，非官方 mAP；官方口径见模型版本页 metrics：P=92.48/R=87.37/mAP50=90.55，test301/imgsz640/conf0.001/iou0.7） |
-| 当前已知问题 | 见下"已知问题"节 |
-| 下一阶段入口 | agent_v1 受控生成工作流迁移（服务器最新版代码已在 `资料分析/handoff_20260912/`） |
+| 已通过测试 | 浏览器主链路 17/17（d1）；异常场景 17/17（d2）；**ai pytest 26 passed**（含受控生成 24 项迁移测试）；agent pytest 13 passed；admin BUILD SUCCESS；web `npm run build` 绿 |
+| 真实链路实测 | test301 检测冒烟：100% 有检出、均值 57ms；Kimi k3 真实润色：报告 status=polished、来源 9-11 个真实 KB 编号、端到端 40-50s（含纠错重润）；低置信（空白图）→ 健康叶 0.0 → 自动复核单创建 → 专家页"低置信复核"标签 |
+| 下一阶段入口 | 评测数据补充（agent `/eval/run` 真实跑分）/ Docker 全栈 / 奶牛项目 |
 
 ## 已完成（全部有运行验证证据）
 
-1. 六服务本地一键启动与互联：admin(8080) / ai(8000) / agent(8002) / web(5173) / PostgreSQL / Redis；
-2. 登录与 JWT 鉴权（admin/expert/user/svc-agent 四角色；未登录 401、越权 403、错误密码提示）；
-3. 图片上传 + 诊断任务创建（文件类型校验、20MB 上限、上传目录自动创建）；
-4. **E2_gfix 真实模型推理**：vendor 内置训练侧运行时（ultralytics 8.4.90 + 融合模块），部署口径 imgsz=640/conf=0.25/iou=0.7/CPU；中文类别映射（健康叶/炭疽病/霜霉病/蔓枯病/白粉病）；
-5. **病斑框、病害类别、置信度、推理耗时展示**（上传页结果卡头 `E2_gfix:ch4v22 · 推理耗时 xx ms`，记录详情同显）；
-6. 基于知识库的结构化诊断报告（五段式）+ 来源追溯（source_id 弹窗原文）；
-7. 历史诊断记录（分页/状态筛选/详情抽屉；权限隔离）；
-8. 用户纠错反馈 → 专家复核流转（PENDING → REVIEWED）；
-9. 重复任务处理（内容哈希 + 120s 窗口去重，改名重传仍命中）；
-10. 操作日志（AOP 落库 + 只读查询接口）；
-11. **模型版本登记与激活**：`E2_gfix:ch4v22` ACTIVE（含 sha256 与官方口径指标），新记录自动携带真实版本号；
-12. 农技诊断 Agent 多轮追问（意图/角色/RAG 徽标、工具轨迹、审计落库）；
-13. 异常降级：AI 宕机 FAILED 落库、LLM 宕机骨架降级、agent 宕机友好错误、DB 宕机统一 500 并可恢复、Redis 宕机双边降级；
-14. 前端空数据态/错误提示态/加载态；
-15. git 建仓与阶段提交。
+1. 六服务本地启动互联 + 登录 JWT 四角色 + 401/403 边界；
+2. 图片上传诊断任务（文件类型校验 + 重复任务内容哈希去重）；
+3. **E2_gfix 真实模型推理**（vendor 训练侧运行时；中文类别；CPU 56-128ms）；
+4. **病斑框/类别/置信度/推理耗时展示**；
+5. **论文受控生成诊断报告（agent_v1 迁移版）**：证据构建（rule A + 低置信/冲突双 flag）→ 知识显式映射检索（28 个合法 source_id）→ 确定性骨架 → LLM 受控润色（prompt 原文、PROTECTED 程序回填原则）→ 12 项校验 → 仅 1 次纠错重润 → 骨架回退（交付率 100% 机制）；报告含 `report_status`（polished / fallback_to_skeleton）与 `uncertainty_note`；
+6. **报告来源追溯**：真实 28 条知识来源（由论文嵌套知识库聚合）同步业务库，弹窗可查原文；
+7. 历史诊断记录 + 用户纠错反馈 + 专家复核流转；
+8. **低置信度自动转专家复核**：检测最高置信度 < 0.75（含无检出）自动创建 UNCERTAIN 待复核单，复核页专用标签；
+9. 操作日志（AOP 落库 + 只读查询接口）；
+10. 模型版本登记激活（E2_gfix:ch4v22，sha256 + 官方口径指标）；
+11. 农技诊断 Agent 多轮追问（意图/角色/RAG 徽标、工具轨迹、审计落库）；
+12. 异常降级：AI 宕机 FAILED 落库、LLM 宕机骨架降级、agent 宕机友好错误、DB 宕机统一 500 可恢复、Redis 宕机双边降级、**LLM 输出不合规自动纠错重润与骨架回退**；
+13. git 阶段提交。
 
-## 正在开发（下一阶段，均未开始编码）
+## 正在开发（下一阶段）
 
-1. **agent_v1 受控生成工作流迁移**（服务器最新版在 `资料分析/handoff_20260912/handoff_20260912/agent_v1_code/`，含消融开关与 29 项单测）；
-2. cucumber-ai 真实 LLM 联调（Kimi key 或论文口径定夺；替换 mock provider）；
-3. 真实农业知识库完善（28 条论文知识库对齐进 admin/ai 双侧）；
-4. 评测数据补充（agent `/eval/run` 真实跑分留证）。
+1. 评测数据补充（agent `/eval/run` 真实跑分留证）；
+2. LLM 备用通道联调（`LLM_PROVIDER=deepseek`，同流水线同校验，速度更快）；
+3. Docker compose 全栈验证（含 RabbitMQ 异步诊断链路）。
 
 ## 后续规划（非秋招必需）
 
-- Docker compose 全栈验证（含 RabbitMQ 异步诊断链路）；
-- 低置信度自动转专家复核（检测低置信标记 rule A 已有口径，可接反馈单自动创建）；
 - 操作日志前端查询页；
 - 来源弹窗加载骨架屏；
-- 模型版本页与 test301 批量评测页打通（批量跑分留证）。
+- 批量评测页（test301 跑分留证）；
+- 奶牛项目（单独任务书）。
 
 ## 已知问题
 
 | # | 问题 | 影响 | 对策/状态 |
 |---|---|---|---|
-| 1 | 报告生成为 mock provider（非 LLM 真写） | 报告文本为模板化骨架 | 下一阶段接 agent_v1/真实 LLM；演示稿需声明 |
-| 2 | DB 宕机时接口阻塞约 30s 才返回 500 | 极端场景体验 | HikariCP 连接超时所致，可接受；已验证恢复后自动可用 |
-| 3 | RabbitMQ 异步链路未真实验证 | compose 模式行为与本地不同 | 装 Docker 后按 README 验证 |
+| 1 | Kimi k3 润色端到端 40-50s（首润可能丢 protected 字段触发纠错重润，与论文首过率 15% 同现象） | 演示等待较长 | admin 读超时已调至 150s；可切 `LLM_PROVIDER=deepseek` 提速（同校验管线）；异步 MQ 模式（compose）可彻底解耦 |
+| 2 | DB 宕机时接口阻塞约 30s 才返回 500 | 极端场景体验 | HikariCP 连接超时，可接受；恢复后自动可用 |
+| 3 | RabbitMQ 异步链路未真实验证 | compose 模式行为差异 | 装 Docker 后验证 |
 | 4 | 来源弹窗加载期闪现"未查询到该来源" | 轻微视觉瑕疵 | 后续加 loading 态 |
-| 5 | 操作日志无前端页面（仅 API+Swagger） | 演示时经 Swagger 展示 | 后续规划 |
-| 6 | 去重命中时不展示推理耗时（未发生新推理） | 属正确语义，勿误判为缺字段 | 已在前端 toast 说明 |
+| 5 | OOD 图片（非叶片）可能产生高置信误检 | 模型固有边界（非 OOD 检测器） | 面试话术素材：低置信复核只覆盖低置信，OOD 靠人工反馈闭环 |
+| 6 | 操作日志无前端页面（仅 API+Swagger） | 演示经 Swagger | 后续规划 |
 
 ## 验证命令速查
 
@@ -64,11 +59,11 @@
 mvn -s tools/settings.xml -DskipTests package        # cucumber-admin（JAVA_HOME=tools/jdk17/...）
 npm run build                                        # cucumber-web
 # 单测
-cucumber-ai/.venv/Scripts/python -m pytest tests/    # cucumber-ai
-cucumber-agent/.venv/Scripts/python -m pytest tests/ # cucumber-agent（在 echomind/ 目录下跑）
+cucumber-ai/.venv/Scripts/python -m pytest tests/    # 26 项（含受控生成迁移测试）
+cucumber-agent/.venv/Scripts/python -m pytest tests/ # 13 项（在 echomind/ 目录）
 # 验收
-tools/pw-venv/Scripts/python tools/acceptance/d1_main.py        # 浏览器主链路
-tools/pw-venv/Scripts/python tools/acceptance/d2_exceptions.py  # 异常场景（会停启服务）
-# 真实模型冒烟（需 ai 在跑）
-# 直接对 localhost:8000/api/v1/detect POST 叶片图，应返回中文类别+耗时+model_version=E2_gfix
+tools/pw-venv/Scripts/python tools/acceptance/d1_main.py
+tools/pw-venv/Scripts/python tools/acceptance/d2_exceptions.py
+# 真实链路冒烟
+# POST localhost:8000/api/v1/diagnose（detections 来自 /detect）→ report_status=polished
 ```
