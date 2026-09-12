@@ -25,7 +25,8 @@ public class AiServiceClient {
     public AiServiceClient(@Value("${ai.base-url:http://localhost:8000}") String baseUrl) {
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setConnectTimeout(Duration.ofSeconds(10));
-        requestFactory.setReadTimeout(Duration.ofSeconds(30));
+        // 受控润色可能触发"首润+纠错重润"两次 LLM 调用（Kimi k3 单次可达 20-40s），读超时给足 150s
+        requestFactory.setReadTimeout(Duration.ofSeconds(150));
         this.restClient = RestClient.builder()
                 .baseUrl(baseUrl)
                 .requestFactory(requestFactory)

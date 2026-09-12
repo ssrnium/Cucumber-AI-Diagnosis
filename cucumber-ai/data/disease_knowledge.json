@@ -1,42 +1,327 @@
-[
-  {
-    "source_id": "KB-JC-001",
-    "disease_type": "炭疽病",
-    "title": "黄瓜炭疽病症状识别",
-    "content": "叶片初期出现水渍状小斑点，后扩大为圆形至不规则形褐色病斑，边缘有黄色晕圈，严重时病斑中央穿孔。茎蔓受害呈梭形凹陷斑。高湿环境下病斑上产生粉红色黏质孢子堆。",
-    "level": "A",
-    "category": "症状"
+{
+  "metadata": {
+    "version": "v1.0",
+    "last_updated": "2026-06-14",
+    "source_count": 28,
+    "disclaimer": "本知识表仅供学术研究与辅助诊断参考，具体用药以当地植保部门指导为准"
   },
-  {
-    "source_id": "KB-SH-002",
-    "disease_type": "霜霉病",
-    "title": "黄瓜霜霉病症状识别",
-    "content": "叶片正面出现多角形淡黄色至黄褐色病斑，受叶脉限制呈角状；叶背对应位置在清晨或高湿时长出灰黑色至紫灰色霉层。病害自下而上扩展，严重时全叶枯死。",
-    "level": "A",
-    "category": "症状"
-  },
-  {
-    "source_id": "KB-MK-003",
-    "disease_type": "蔓枯病",
-    "title": "黄瓜蔓枯病症状识别",
-    "content": "叶片多从叶缘开始发病，形成 V 字形或不规则形大斑，黄褐色，上有轮纹并散生小黑点；茎蔓受害呈油渍状纵裂，溢出琥珀色胶状物，后期病部干枯。",
-    "level": "B",
-    "category": "症状"
-  },
-  {
-    "source_id": "KB-BF-004",
-    "disease_type": "白粉病",
-    "title": "黄瓜白粉病防治",
-    "content": "发病初期叶面出现白色近圆形粉斑，扩展后连片呈白粉状。防治以选用抗病品种、合理密植、控制氮肥为主；发病初期可喷施醚菌酯、氟硅唑或硫磺悬浮剂，注意轮换用药。",
-    "level": "A",
-    "category": "防治"
-  },
-  {
-    "source_id": "KB-JK-005",
-    "disease_type": "健康叶",
-    "title": "健康黄瓜叶片特征",
-    "content": "健康黄瓜叶片呈掌状五角形，叶色浓绿有光泽，叶面平展无病斑、无粉层、无霉层，叶缘锯齿清晰，叶脉纹理正常。保持良好通风透光与水肥均衡是预防病害的基础。",
-    "level": "B",
-    "category": "防治"
+  "diseases": [
+    {
+      "disease_id": "DM",
+      "name_cn": "黄瓜霜霉病",
+      "name_en": "Cucumber Downy Mildew",
+      "pathogen": "Pseudoperonospora cubensis（古巴假霜霉菌）",
+      "category": "oomycete",
+      "source_priority": [
+        "KB-CN-001",
+        "KB-CAAS-001",
+        "KB-DB-002",
+        "KB-GB-001",
+        "KB-NY-001"
+      ],
+      "symptoms": {
+        "leaf_upper": "初期为水浸状淡绿色小斑点，逐渐扩大并因叶脉限制而呈多角形，病斑颜色由淡黄转为黄褐至褐色",
+        "leaf_lower": "在湿度较高时生出灰黑色稀疏霉层，为病原菌的孢囊梗与孢子囊",
+        "spot_shape": "多角形，受叶脉限制呈不规则多角",
+        "spot_color": "由淡绿色→淡黄色→黄褐色→褐色",
+        "mycelium": "灰黑色霉状物，湿度大时明显",
+        "progression": "病斑扩大并相互连片，严重时整叶枯黄卷缩，田间呈现火烧状",
+        "sources": [
+          "KB-DB-002",
+          "KB-BOOK-002",
+          "KB-CN-001",
+          "KB-GB-001",
+          "KB-NY-001"
+        ]
+      },
+      "conditions": {
+        "temperature": "16°C至24°C，最适温度20°C左右",
+        "humidity": "相对湿度85%以上为孢子囊形成与侵染的必要条件，叶面结露时间超过4小时发病显著加重",
+        "season": "春末夏初（4-6月）与秋季（9-10月）为两个流行高峰，设施栽培中可周年发生",
+        "cultivation": "通风不良、植株过密、偏施氮肥、连续阴雨后转晴等栽培管理因素显著加重病情",
+        "sources": [
+          "KB-DB-002",
+          "KB-PROV-020",
+          "KB-PROV-006",
+          "KB-CN-001",
+          "KB-JOUR-001"
+        ]
+      },
+      "control": {
+        "agricultural": "选用经省级以上农作物品种审定委员会审定的抗病品种；与非瓜类作物实行3年以上轮作；采用高畦栽培与膜下滴灌以降低田间湿度；及时摘除病叶并带出田外销毁",
+        "chemical": "发病初期可选用三唑类、甲氧基丙烯酸酯类、烯酰吗啉类、氰霜唑等登记药剂进行喷雾防治，注意不同作用机理的药剂轮换使用",
+        "biological": "可选用枯草芽孢杆菌等微生物制剂在发病前或发病初期进行预防性施用",
+        "disclaimer": "具体用药品种、剂型、剂量及安全间隔期以当地植保部门指导为准",
+        "sources": [
+          "KB-CN-001",
+          "KB-CAAS-001",
+          "KB-PROV-006",
+          "KB-GB-001",
+          "KB-NY-001"
+        ]
+      },
+      "notes": {
+        "safety_interval": "严格遵守所选药剂的安全间隔期，采收前按标签规定停止用药",
+        "resistance_management": "为延缓病原抗药性，应轮换使用不同作用机理的杀菌剂，避免单一药剂连续多次使用",
+        "regional_variation": "在设施栽培高湿地区或梅雨季节，需加密田间监测并适当提高防治频次",
+        "sources": [
+          "KB-CAAS-001",
+          "KB-PROV-020",
+          "KB-CN-001"
+        ]
+      }
+    },
+    {
+      "disease_id": "PM",
+      "name_cn": "黄瓜白粉病",
+      "name_en": "Cucumber Powdery Mildew",
+      "pathogen": "Sphaerotheca fuliginea（单囊壳白粉菌）与 Erysiphe cichoracearum（二孢白粉菌）",
+      "category": "fungal",
+      "source_priority": [
+        "KB-CN-001",
+        "KB-CAAS-001",
+        "KB-BOOK-003",
+        "KB-NAU-001",
+        "KB-NY-001"
+      ],
+      "symptoms": {
+        "leaf_upper": "叶片正面初生白色近圆形小粉斑，后扩大成边缘不明显的连片白粉斑",
+        "leaf_lower": "白粉层较正面薄，严重时亦可覆盖",
+        "spot_shape": "近圆形粉斑，扩大后连片",
+        "spot_color": "白色至灰白色",
+        "mycelium": "白色粉状霉层，为病原菌的菌丝体与分生孢子",
+        "progression": "病斑连片后整叶布满白粉，后期变灰白色并出现黑色小点（闭囊壳），叶片变黄枯死",
+        "sources": [
+          "KB-DB-002",
+          "KB-BOOK-003",
+          "KB-CN-001",
+          "KB-NAU-001",
+          "KB-JOUR-002"
+        ]
+      },
+      "conditions": {
+        "temperature": "适宜温度15°C至30°C，最适温度20°C至25°C",
+        "humidity": "湿度中等即可发生（不同于霜霉病），干旱条件下更易流行",
+        "season": "春末至秋季，设施栽培中全年可发生",
+        "cultivation": "通风不良、植株过密、偏施氮肥、土壤缺水或空气过干均利于发病",
+        "sources": [
+          "KB-DB-002",
+          "KB-BOOK-003",
+          "KB-PROV-013",
+          "KB-NAU-001",
+          "KB-JOUR-003"
+        ]
+      },
+      "control": {
+        "agricultural": "选用抗病品种；与非瓜类作物轮作；合理密植、改善通风；及时摘除病叶；平衡施肥，避免偏施氮肥",
+        "chemical": "发病初期可选用三唑类、甲氧基丙烯酸酯类、苯醚甲环唑、醚菌酯等登记药剂进行喷雾防治",
+        "biological": "可选用枯草芽孢杆菌、蜡质芽孢杆菌等微生物制剂；或使用植物源农药如蛇床子素等",
+        "disclaimer": "具体用药品种、剂型、剂量及安全间隔期以当地植保部门指导为准",
+        "sources": [
+          "KB-CN-001",
+          "KB-CAAS-001",
+          "KB-BOOK-003",
+          "KB-NY-001",
+          "KB-JOUR-002"
+        ]
+      },
+      "notes": {
+        "safety_interval": "严格遵守所选药剂的安全间隔期",
+        "resistance_management": "白粉病易产生抗药性，应轮换使用不同作用机理的杀菌剂",
+        "regional_variation": "在干旱少雨地区与季节更需注意早期预防",
+        "sources": [
+          "KB-CAAS-001",
+          "KB-BOOK-003",
+          "KB-NAU-001"
+        ]
+      }
+    },
+    {
+      "disease_id": "ANT",
+      "name_cn": "黄瓜炭疽病",
+      "name_en": "Cucumber Anthracnose",
+      "pathogen": "Colletotrichum orbiculare（瓜类刺盘孢）",
+      "category": "fungal",
+      "source_priority": [
+        "KB-CN-001",
+        "KB-CAAS-001",
+        "KB-DB-002",
+        "KB-NAU-002",
+        "KB-NY-001"
+      ],
+      "symptoms": {
+        "leaf_upper": "初为水浸状小斑点，扩大后为近圆形或不规则形病斑，颜色由淡黄转为黄褐至褐色",
+        "leaf_lower": "病斑上散生小黑点（病原菌分生孢子盘），潮湿时溢出粉红色黏孢子团",
+        "spot_shape": "近圆形或不规则形，直径约4-18毫米",
+        "spot_color": "黄褐色至褐色，边缘略深",
+        "mycelium": "小黑点状分生孢子盘，潮湿时显粉红色",
+        "progression": "病斑扩大连片并易破裂穿孔，严重时整叶枯死",
+        "sources": [
+          "KB-DB-002",
+          "KB-BOOK-002",
+          "KB-CN-001",
+          "KB-NAU-002",
+          "KB-JOUR-004"
+        ]
+      },
+      "conditions": {
+        "temperature": "适宜温度20°C至28°C，最适温度24°C左右",
+        "humidity": "相对湿度85%以上发病较重",
+        "season": "夏秋季多雨季节为流行高峰",
+        "cultivation": "连作地、低洼积水地、偏施氮肥、通风不良地块发病重",
+        "sources": [
+          "KB-DB-002",
+          "KB-PROV-014",
+          "KB-PROV-006",
+          "KB-NAU-002",
+          "KB-JOUR-005"
+        ]
+      },
+      "control": {
+        "agricultural": "选用抗病品种；与非瓜类作物轮作3年以上；高畦栽培，雨后及时排水；及时清除病残体并销毁",
+        "chemical": "发病初期可选用苯醚甲环唑、咪鲜胺、嘧菌酯、吡唑醚菌酯等登记药剂进行喷雾防治",
+        "biological": "可选用枯草芽孢杆菌等微生物制剂；或使用多抗霉素等抗生素类农药",
+        "disclaimer": "具体用药品种、剂型、剂量及安全间隔期以当地植保部门指导为准",
+        "sources": [
+          "KB-CN-001",
+          "KB-CAAS-001",
+          "KB-PROV-006",
+          "KB-NY-001",
+          "KB-CAAS-002"
+        ]
+      },
+      "notes": {
+        "safety_interval": "严格遵守所选药剂的安全间隔期",
+        "resistance_management": "为延缓抗药性，应轮换使用不同作用机理的杀菌剂",
+        "regional_variation": "南方多雨地区需在雨季前进行预防性施药",
+        "sources": [
+          "KB-CAAS-001",
+          "KB-PROV-014",
+          "KB-CAAS-002"
+        ]
+      }
+    },
+    {
+      "disease_id": "GST",
+      "name_cn": "黄瓜蔓枯病",
+      "name_en": "Cucumber Gummy Stem Blight",
+      "pathogen": "Didymella bryoniae（瓜蔓割菌）",
+      "category": "fungal",
+      "source_priority": [
+        "KB-CN-001",
+        "KB-CAAS-001",
+        "KB-BOOK-002",
+        "KB-NAU-003",
+        "KB-NY-001"
+      ],
+      "symptoms": {
+        "leaf_upper": "叶片上初生褐色小斑点，扩大后为近圆形或不规则形大病斑，直径可达10-30毫米",
+        "leaf_lower": "病斑上散生许多小黑点（病原菌分生孢子器）",
+        "spot_shape": "近圆形至不规则形大病斑",
+        "spot_color": "褐色至深褐色，边缘略深，有同心轮纹",
+        "mycelium": "小黑点状分生孢子器",
+        "progression": "病斑易破裂穿孔，叶片枯黄；茎蔓发病时出现褐色不规则形病斑并分泌胶质物（流胶）",
+        "sources": [
+          "KB-DB-002",
+          "KB-BOOK-002",
+          "KB-CAAS-001",
+          "KB-NAU-003",
+          "KB-JOUR-006"
+        ]
+      },
+      "conditions": {
+        "temperature": "适宜温度18°C至25°C",
+        "humidity": "相对湿度85%以上为发病必要条件",
+        "season": "春末至秋季，设施栽培中全年可发生",
+        "cultivation": "连作地、低洼地、植株过密、通风不良、偏施氮肥发病重；茎蔓伤口（如整枝、打杈）利于病原侵入",
+        "sources": [
+          "KB-DB-002",
+          "KB-CAAS-001",
+          "KB-PROV-021",
+          "KB-NAU-003",
+          "KB-JOUR-007"
+        ]
+      },
+      "control": {
+        "agricultural": "选用抗病品种；与非瓜类作物轮作3年以上；高畦栽培，及时排水；及时清除病残体并销毁；茎蔓发病时可用药液涂抹病部",
+        "chemical": "发病初期可选用苯醚甲环唑、嘧菌酯、吡唑醚菌酯、甲基托布津等登记药剂进行喷雾防治",
+        "biological": "可选用枯草芽孢杆菌等微生物制剂在发病前或发病初期进行预防性施用",
+        "disclaimer": "具体用药品种、剂型、剂量及安全间隔期以当地植保部门指导为准",
+        "sources": [
+          "KB-CN-001",
+          "KB-CAAS-001",
+          "KB-BOOK-002",
+          "KB-NY-001",
+          "KB-CAAS-002"
+        ]
+      },
+      "notes": {
+        "safety_interval": "严格遵守所选药剂的安全间隔期",
+        "resistance_management": "为延缓抗药性，应轮换使用不同作用机理的杀菌剂",
+        "regional_variation": "茎蔓发病时除喷雾外，可用药液涂抹病部提高防治效果",
+        "sources": [
+          "KB-CAAS-001",
+          "KB-BOOK-002",
+          "KB-CAAS-002"
+        ]
+      }
+    }
+  ],
+  "healthy_leaf": {
+    "disease_id": "Fresh_Leaf",
+    "name_cn": "健康叶片",
+    "name_en": "Healthy Cucumber Leaf",
+    "pathogen": "",
+    "category": "healthy",
+    "source_priority": [
+      "KB-BOOK-001",
+      "KB-CN-002",
+      "KB-BOOK-004",
+      "KB-SCIENCE-001"
+    ],
+    "symptoms": {
+      "leaf_upper": "叶片浓绿，叶面平整有光泽，无病斑、无虫蛀",
+      "leaf_lower": "叶背颜色稍浅于叶面，叶脉清晰，无霉层、无分泌物",
+      "spot_shape": "无",
+      "spot_color": "叶面深绿，叶背浅绿",
+      "mycelium": "无",
+      "progression": "无病变",
+      "sources": [
+        "KB-BOOK-001",
+        "KB-CN-002",
+        "KB-BOOK-004",
+        "KB-SCIENCE-001"
+      ]
+    },
+    "conditions": {
+      "temperature": "适宜温度20°C至30°C",
+      "humidity": "适宜相对湿度60%至80%",
+      "season": "全生长季",
+      "cultivation": "正常栽培管理条件下保持健康",
+      "sources": [
+        "KB-BOOK-001",
+        "KB-BOOK-004",
+        "KB-PROV-001"
+      ]
+    },
+    "control": {
+      "agricultural": "无需化学防治，建议保持合理栽培管理：合理密植、科学施肥、均衡灌溉",
+      "chemical": "",
+      "biological": "",
+      "disclaimer": "若发现疑似病斑，应及时复检并按对应病害的防治方案处理",
+      "sources": [
+        "KB-BOOK-001",
+        "KB-PROV-001",
+        "KB-BOOK-004"
+      ]
+    },
+    "notes": {
+      "safety_interval": "无",
+      "resistance_management": "无",
+      "regional_variation": "无",
+      "sources": [
+        "KB-BOOK-001"
+      ]
+    }
   }
-]
+}

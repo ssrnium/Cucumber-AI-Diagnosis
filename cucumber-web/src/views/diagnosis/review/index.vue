@@ -13,8 +13,8 @@
       <el-table-column prop="record_id" label="诊断记录" width="100" />
       <el-table-column label="用户判定" width="100">
         <template #default="{ row }">
-          <el-tag :type="row.verdict === 'CORRECT' ? 'success' : 'danger'">
-            {{ row.verdict === 'CORRECT' ? '诊断正确' : '诊断有误' }}
+          <el-tag :type="row.verdict === 'CORRECT' ? 'success' : row.verdict === 'UNCERTAIN' ? 'warning' : 'danger'">
+            {{ row.verdict === 'CORRECT' ? '诊断正确' : row.verdict === 'UNCERTAIN' ? '低置信复核' : '诊断有误' }}
           </el-tag>
         </template>
       </el-table-column>
