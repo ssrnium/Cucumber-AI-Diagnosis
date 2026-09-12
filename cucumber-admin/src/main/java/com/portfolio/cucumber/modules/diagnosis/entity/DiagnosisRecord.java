@@ -33,4 +33,8 @@ public class DiagnosisRecord {
     /** PENDING / DONE / FAILED */
     private String status;
     private LocalDateTime createTime;
+
+    /** 非持久化：重复提交命中已有记录时置 true，供前端提示"已为你打开原记录" */
+    @TableField(exist = false)
+    private Boolean duplicated;
 }

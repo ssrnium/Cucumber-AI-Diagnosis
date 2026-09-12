@@ -35,11 +35,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 @RestController
@@ -81,17 +83,42 @@ public class DiagnosisController {
         if (file.isEmpty()) {
             throw new BizException("请上传叶片图片");
         }
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new BizException("仅支持上传图片文件（jpg/png/webp 等）");
+        }
         String original = StringUtils.cleanPath(
                 file.getOriginalFilename() == null ? "image.jpg" : file.getOriginalFilename());
-        String filename = UUID.randomUUID() + "_" + original;
+        byte[] bytes = file.getBytes();
+        String hash = contentHash(bytes);
+        String filename = hash + extensionOf(original);
         Path dir = Paths.get(uploadDir).toAbsolutePath().normalize();
         Files.createDirectories(dir);
-        file.transferTo(dir.resolve(filename));
+        Path target = dir.resolve(filename);
 
         LoginUser currentUser = SecurityUtils.current();
+        Long uid = currentUser == null ? null : currentUser.getUserId();
+        // 重复任务处理：同一用户上传内容完全相同的图片时，直接返回窗口期内的已有记录，
+        // 不重复创建任务、不重复调用 AI 服务（文件名即内容哈希，天然幂等；改名不影响判定）。
+        if (uid != null) {
+            DiagnosisRecord existing = diagnosisRecordMapper.selectOne(new LambdaQueryWrapper<DiagnosisRecord>()
+                    .eq(DiagnosisRecord::getUserId, uid)
+                    .likeRight(DiagnosisRecord::getImageUrl, "/files/" + hash)
+                    .ge(DiagnosisRecord::getCreateTime, LocalDateTime.now().minusSeconds(DEDUP_WINDOW_SECONDS))
+                    .orderByDesc(DiagnosisRecord::getId)
+                    .last("limit 1"));
+            if (existing != null) {
+                existing.setDuplicated(true);
+                return Result.success(existing);
+            }
+        }
+        if (!Files.exists(target)) {
+            Files.write(target, bytes);
+        }
+
         DiagnosisRecord record = new DiagnosisRecord();
         record.setRecordNo(generateRecordNo());
-        record.setUserId(currentUser == null ? null : currentUser.getUserId());
+        record.setUserId(uid);
         record.setImageUrl("/files/" + filename);
         record.setModelVersion(activeDetectionModel());
         record.setStatus("PENDING");
@@ -107,7 +134,7 @@ public class DiagnosisController {
         }
 
         try {
-            Map<String, Object> detectResponse = aiServiceClient.detect(file.getBytes(), original);
+            Map<String, Object> detectResponse = aiServiceClient.detect(bytes, original);
             List<Map<String, Object>> detections =
                     (List<Map<String, Object>>) detectResponse.get("detections");
             Map<String, Object> report = aiServiceClient.diagnose(detections);
@@ -213,6 +240,22 @@ public class DiagnosisController {
         feedback.setUpdateTime(LocalDateTime.now());
         diagnosisFeedbackMapper.updateById(feedback);
         return Result.success();
+    }
+
+    private static final long DEDUP_WINDOW_SECONDS = 120;
+
+    private String contentHash(byte[] bytes) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            return HexFormat.of().formatHex(md.digest(bytes));
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private String extensionOf(String filename) {
+        int dot = filename.lastIndexOf('.');
+        return dot >= 0 ? filename.substring(dot) : ".jpg";
     }
 
     private String generateRecordNo() {

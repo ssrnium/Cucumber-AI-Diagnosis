@@ -138,7 +138,7 @@ const onUploadImage = async (options: any) => {
   try {
     const res: any = await uploadDiagnosis(options.file)
     const record = res?.data
-    pendingImage.value = record?.imageUrl || ''
+    pendingImage.value = record?.image_url || ''
     pendingRecordId.value = record?.id
     ElMessage.success('图片已上传，发送消息后将由诊断 Agent 解读')
   } catch {

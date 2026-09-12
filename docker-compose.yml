@@ -60,7 +60,7 @@ services:
     build: ./cucumber-admin
     container_name: cucumber-admin
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/cucumber_db
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/cucumber_db?stringtype=unspecified
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_DATA_REDIS_HOST: redis
