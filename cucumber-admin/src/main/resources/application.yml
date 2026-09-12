@@ -5,7 +5,7 @@ spring:
   application:
     name: cucumber-admin
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/cucumber_db}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/cucumber_db?stringtype=unspecified}
     username: ${SPRING_DATASOURCE_USERNAME:postgres}
     password: ${SPRING_DATASOURCE_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
@@ -25,6 +25,8 @@ spring:
     multipart:
       max-file-size: 20MB
       max-request-size: 20MB
+  jackson:
+    property-naming-strategy: SNAKE_CASE
 
 springdoc:
   swagger-ui:

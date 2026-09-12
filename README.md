@@ -53,6 +53,8 @@ docker compose up -d --build
 
 前置：本地需有 PostgreSQL（建库 `cucumber_db` 并执行 `cucumber-admin/src/main/resources/db/schema.sql`）与 Redis。
 
+> **无 Docker 环境实测路径（2026-09-12 验收通过）**：便携 PostgreSQL 16.10（initdb -A trust -E UTF8 --locale=C，注意必须经 `pg_ctl start` 启动，直接跑 postgres.exe 会被管理员权限拒绝）+ 便携 Redis 5.0.14（`redis-server --port 6379`）即可满足前置依赖；验收时使用的是 `../tools/` 下的便携 JDK17/Maven/PG/Redis。完整验证记录见 `验收报告_20260912.md`，当前项目状态见 `PROJECT_STATUS.md`。
+
 ```bash
 # 1. AI 服务（Python 3.9+）
 cd cucumber-ai

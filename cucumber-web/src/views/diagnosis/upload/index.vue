@@ -124,7 +124,9 @@ const onDiagnose = async () => {
   try {
     const res: any = await uploadDiagnosis(rawFile.value)
     record.value = res.data
-    if (res.data?.status === 'DONE') {
+    if (res.data?.duplicated) {
+      ElMessage.info('检测到重复上传，已为你打开原诊断记录')
+    } else if (res.data?.status === 'DONE') {
       ElMessage.success('诊断完成')
     }
   } catch {

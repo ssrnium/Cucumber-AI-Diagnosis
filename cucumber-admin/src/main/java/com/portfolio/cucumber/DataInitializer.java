@@ -35,7 +35,7 @@ public class DataInitializer implements ApplicationRunner {
             "system:user:list", "system:user:create", "system:user:update",
             "system:user:delete", "system:user:reset", "system:user:assign",
             "system:role:list", "system:role:create", "system:role:update",
-            "system:role:delete", "system:role:assign",
+            "system:role:delete", "system:role:assign", "system:log:list",
             "knowledge:manage", "feedback:review", "model:manage", "diagnosis:list:all",
             "agent:chat", "agent:monitor", "agent:eval", "agent:skills");
 
