@@ -17,7 +17,7 @@
     <el-row v-if="record" :gutter="16" class="result-row">
       <el-col :span="10">
         <el-card shadow="never">
-          <template #header>病斑检测结果（{{ record.model_version }}）</template>
+          <template #header>病斑检测结果（{{ record.model_version }}<span v-if="record.inference_ms"> · 推理耗时 {{ record.inference_ms.toFixed(0) }}ms</span>）</template>
           <div class="image-wrapper">
             <img ref="imgRef" :src="previewUrl" class="leaf-image" @load="onImageLoad" />
             <div v-for="(box, index) in scaledBoxes" :key="index" class="detect-box" :style="box.style">

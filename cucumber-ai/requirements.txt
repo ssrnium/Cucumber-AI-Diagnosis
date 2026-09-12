@@ -7,3 +7,12 @@ numpy==1.26.4
 python-multipart==0.0.20
 pytest==8.3.4
 httpx==0.27.2
+
+# ── E2_gfix 真实推理依赖（v0.2 接入）──
+# 注意：推理实际使用 vendor/ 目录内置的训练侧运行时（ultralytics 8.4.90 +
+# 融合模块），pip 的 ultralytics 仅提供 torch/cv2 等依赖底座。
+torch>=2.2,<2.9
+torchvision>=0.17,<1.0
+opencv-python>=4.8
+pillow>=10.0
+ultralytics>=8.3,<8.5
