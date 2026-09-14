@@ -28,12 +28,12 @@
 12. 异常降级：AI 宕机 FAILED 落库、LLM 宕机骨架降级、agent 宕机友好错误、DB 宕机统一 500 可恢复、Redis 宕机双边降级、**LLM 输出不合规自动纠错重润与骨架回退**；
 13. git 阶段提交。
 14. 文档与资产收尾（2026-09-12 晚）：README 重写（论文资产集成现状表 + 4 张真实截图 + 主链路演示脚本，消除"插入点/Mock 骨架"过时表述）、验收报告与截图归档 docs/、E2_gfix 权重入库 git、ai Dockerfile 补齐 vendor/weights、docs/项目状态详录_20260914.md（含运行手册与坑位清单）。
+15. 评测与备用通道（2026-09-14）：**智能体真实评测**（15 条意图用例 100%/Macro-F1 1.0，对话 Judge 六维 0.58-0.67，基线建立，见 docs/评测记录_20260914.md 与 eval_run_20260914.json）；**DeepSeek 备用通道联调**（LLM_PROVIDER=deepseek 下受控生成 polished、12 项校验全过、端到端 15s，与 Kimi 解耦成立）。
 
 ## 正在开发（下一阶段）
 
-1. 评测数据补充（agent `/eval/run` 真实跑分留证）；
-2. LLM 备用通道联调（`LLM_PROVIDER=deepseek`，同流水线同校验，速度更快）；
-3. Docker compose 全栈验证（含 RabbitMQ 异步诊断链路）。
+1. Docker compose 全栈验证（含 RabbitMQ 异步诊断链路）；
+2. 对话 Agent prompt 完整度调优后重跑评测对比基线。
 
 ## 后续规划（非秋招必需）
 

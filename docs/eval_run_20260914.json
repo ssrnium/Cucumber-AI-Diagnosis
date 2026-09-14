@@ -1,0 +1,216 @@
+{
+  "pass_rate": 0.5,
+  "total": 4,
+  "passed": 2,
+  "avg_scores": {
+    "relevance": 0.65,
+    "accuracy": 0.65,
+    "completeness": 0.5833,
+    "helpfulness": 0.6,
+    "diagnosis_accuracy": 0.65,
+    "medication_safety": 0.6667,
+    "intent_accuracy": 1.0
+  },
+  "regressions": [],
+  "recommendations": [
+    "相关性偏低：检查 Agent system_prompt，确保 Agent 聚焦于用户问题",
+    "完整性偏低：Agent 可能过早结束回答，考虑在 prompt 中要求提供完整解决方案",
+    "有用性偏低：回答可能过于抽象，考虑要求 Agent 提供具体操作步骤",
+    "诊断准确性偏低：检查诊断 Agent 的 prompt 与知识种子覆盖度，确保结论与症状依据一致",
+    "用药安全性偏低：必须强制安全间隔期提醒与禁限用农药拒绝逻辑，检查 medication skill 是否注入"
+  ],
+  "results": [
+    {
+      "test_id": "intent_recognition",
+      "passed": true,
+      "scores": {
+        "accuracy": 1.0,
+        "macro_f1": 1.0
+      },
+      "detail": "准确率 100.0%，Macro-F1 1.000",
+      "metadata": {
+        "total": 15,
+        "correct": 15,
+        "cases": [
+          {
+            "message": "我上传了一张黄瓜叶片照片，帮我看看是什么病",
+            "expected": "disease_diagnosis",
+            "predicted": "disease_diagnosis",
+            "confidence": 0.8369897104233563,
+            "reasoning": "用户上传黄瓜叶片照片并要求判断是什么病，属于病害诊断意图。"
+          },
+          {
+            "message": "叶子上出现黄斑和霉层，这到底是什么病",
+            "expected": "disease_diagnosis",
+            "predicted": "disease_diagnosis",
+            "confidence": 0.8120357831603542,
+            "reasoning": "用户描述了叶片出现黄斑和霉层的症状，并询问具体是什么病，属于症状判读与病害诊断。"
+          },
+          {
+            "message": "刚拍的这张图，帮我诊断一下叶片有没有问题",
+            "expected": "disease_diagnosis",
+            "predicted": "disease_diagnosis",
+            "confidence": 0.729,
+            "reasoning": "用户上传图片并要求判读叶片是否有病害问题，属于症状/图片诊断请求。"
+          },
+          {
+            "message": "霜霉病一般怎么防治",
+            "expected": "prevention_qa",
+            "predicted": "prevention_qa",
+            "confidence": 0.8344028448875076,
+            "reasoning": "用户询问霜霉病的一般防治方法，属于病害预防与防治知识咨询，未提及具体药剂、剂量或安全间隔期。"
+          },
+          {
+            "message": "炭疽病在什么温湿度条件下容易发病",
+            "expected": "prevention_qa",
+            "predicted": "prevention_qa",
+            "confidence": 0.7841226503185788,
+            "reasoning": "用户询问炭疽病容易发病的温湿度条件，属于病害发病条件相关知识。"
+          },
+          {
+            "message": "棚里湿度大是不是容易长白粉病，怎么预防",
+            "expected": "prevention_qa",
+            "predicted": "prevention_qa",
+            "confidence": 0.8031158760242132,
+            "reasoning": "用户询问湿度大是否易诱发白粉病以及如何预防，属于病害预防与发病条件知识咨询。"
+          },
+          {
+            "message": "白粉病可以打什么药",
+            "expected": "medication_advice",
+            "predicted": "medication_advice",
+            "confidence": 0.736,
+            "reasoning": "用户询问白粉病可以打什么药，属于具体药剂咨询。"
+          },
+          {
+            "message": "醚菌酯喷完几天能采收",
+            "expected": "medication_advice",
+            "predicted": "medication_advice",
+            "confidence": 0.7159602354509255,
+            "reasoning": "用户询问具体药剂醚菌酯喷施后的采收安全间隔期，属于用药安全间隔期问题。"
+          },
+          {
+            "message": "蔓枯病用咪鲜胺安全吗，间隔期多久",
+            "expected": "medication_advice",
+            "predicted": "medication_advice",
+            "confidence": 0.7770045120101363,
+            "reasoning": "用户询问具体药剂咪鲜胺对蔓枯病是否安全及安全间隔期，属于用药建议范畴。"
+          },
+          {
+            "message": "这个诊断结果我不认可，给我转人工专家",
+            "expected": "human_handoff",
+            "predicted": "human_handoff",
+            "confidence": 0.8227924998575036,
+            "reasoning": "用户明确不认可诊断结果并要求转人工专家介入。"
+          },
+          {
+            "message": "情况很严重可能绝收，我要人工复核",
+            "expected": "human_handoff",
+            "predicted": "human_handoff",
+            "confidence": 0.7579309469711051,
+            "reasoning": "用户明确要求人工复核，并强调情况严重可能绝收。"
+          },
+          {
+            "message": "你好",
+            "expected": "greeting",
+            "predicted": "greeting",
+            "confidence": 0.9500000000000001,
+            "reasoning": "用户仅发送问候语“你好”，属于打招呼寒暄。"
+          },
+          {
+            "message": "早上好",
+            "expected": "greeting",
+            "predicted": "greeting",
+            "confidence": 0.9430000000000001,
+            "reasoning": "用户仅发送问候语，未提及病害症状、防治或用药等业务问题。"
+          },
+          {
+            "message": "今天天气怎么样",
+            "expected": "other",
+            "predicted": "other",
+            "confidence": 0.6789999999999999,
+            "reasoning": "用户询问天气情况，与黄瓜病害诊断、防治、用药或转人工等业务意图无关。"
+          },
+          {
+            "message": "给我讲个笑话吧",
+            "expected": "other",
+            "predicted": "other",
+            "confidence": 0.6649999999999999,
+            "reasoning": "用户要求讲笑话，与黄瓜病害诊断平台的任何业务意图均不相关。"
+          }
+        ]
+      }
+    },
+    {
+      "test_id": "dialog_0",
+      "passed": false,
+      "scores": {
+        "relevance": 0.5,
+        "accuracy": 0.5,
+        "completeness": 0.5,
+        "helpfulness": 0.5,
+        "diagnosis_accuracy": 0.5,
+        "medication_safety": 0.5,
+        "overall": 0.5
+      },
+      "detail": "Q: 霜霉病怎么治？请结合知识库说明，并注明来源... → 综合评分 0.500",
+      "metadata": {
+        "question": "霜霉病怎么治？请结合知识库说明，并注明来源",
+        "response": "**结论先行**：霜霉病防治以\"农业防治打底 + 发病初期及时用药 + 轮换用药\"为主。知识库中已检索到该病害的农业与生物防治、化学防治方向及用药注意事项条目；但**症状识别和发病条件（温度/湿度阈值）两类条目本次未检索到**，如需这两部分请允许我再换关键词检索或转人工确认。\n\n**1. 农业防治（基础，优先做）**\n- 选用经省级以上品种审定委员会审定的抗病品种；与非瓜类作物实行 3 年以上轮作 [KB-DM-003]\n- 采用高畦栽培与膜下滴灌降低田间湿度；及时摘除病叶并带出田外销毁 [KB-DM-003]\n\n**2. 生物防治**\n- 可选用枯草芽孢杆菌等微生物制剂，在发病前或发病初期做预防性施用 [KB-DM-003]\n\n**3. 化学防治（仅在发病初期，方向性建议）**\n- 发病初期可选用三唑类、甲氧基丙烯酸酯类、烯酰吗啉类、氰霜唑等登记药剂喷雾防治，并注意不同作用机理药剂轮换使用 [KB-DM-004]\n- 具体药剂品种、剂型、剂量和安全间隔期属于用药剂量细节，请以药剂登记标签为准，或转用药安全顾问确认 —— 我不提供具体剂量\n\n**4. 用药注意与抗性管理**\n- 严格遵守所选药剂的安全间隔期，采收前按标签规定停止用药 [KB-DM-005]\n- 轮换使用不同作用机理的杀菌剂，避免单一药剂连续多次使用 [KB-DM-005]\n- 设施栽培高湿地区或梅雨季节，需加密田间监测并适当提高防治频次 [KB-DM-005]\n- 设施黄瓜采收频繁，临近采收优先选安全间隔期短的药剂或生物制剂；无法确认间隔期时宁可延后采收 [KB-SAFE-001]\n\n**需要您补充的信息**（有助于给出更贴合的建议）：\n1. 您的栽培方式是设施大棚还是露地？\n2. 目前是预防期、发病初期，还是已到扩展期？\n\n**知识边界说明**：本次检索未返回霜霉病的症状条目和发病条件（温湿度）条目，我不会凭经验补充这部分内容。如需，我可再检索一次或为您转人工专家。\n\n以上为知识库参考内容，具体措施结合当地植保部门指导。",
+        "agent_type": "prevention",
+        "intent": "prevention_qa",
+        "turn": 0,
+        "conv_id": "eval_0",
+        "judge_failed": true,
+        "judge_error": "Expecting value: line 1 column 1 (char 0)"
+      }
+    },
+    {
+      "test_id": "dialog_1",
+      "passed": false,
+      "scores": {
+        "relevance": 0.5,
+        "accuracy": 0.5,
+        "completeness": 0.5,
+        "helpfulness": 0.5,
+        "diagnosis_accuracy": 0.5,
+        "medication_safety": 0.5,
+        "overall": 0.5
+      },
+      "detail": "Q: 炭疽病用什么药？用药上要注意什么安全问题... → 综合评分 0.500",
+      "metadata": {
+        "question": "炭疽病用什么药？用药上要注意什么安全问题",
+        "response": "**关于炭疽病用药，我先说明一点：具体用药品种、剂型、剂量和安全间隔期属于用药安全范畴，需要由用药安全顾问为您核对当地登记情况；我这边先把知识库里的方向和通用安全要点给您。**\n\n**一、药剂方向（知识库口径）**\n发病初期可选用登记药剂喷雾防治，知识库列出的方向包括：苯醚甲环唑、咪鲜胺、嘧菌酯、吡唑醚菌酯等 [KB-ANT-004]。\n> 原文明确：具体用药品种、剂型、剂量及安全间隔期以当地植保部门指导为准 [KB-ANT-004]。\n\n**二、配合的农艺与生物措施** [KB-ANT-003]\n- 选用抗病品种；与非瓜类作物轮作 3 年以上\n- 高畦栽培，雨后及时排水；及时清除病残体并销毁\n- 生物防治方向：枯草芽孢杆菌等微生物制剂，或多抗霉素等抗生素类农药（发病前或初期预防性施用）\n\n**三、用药安全要点** [KB-GST-005]\n- **安全间隔期**：严格遵守所选药剂的安全间隔期，采摘前务必算清天数——这点对黄瓜这种连续采收作物尤其关键\n- **抗性管理**：轮换使用不同作用机理的杀菌剂，避免长期单一用药\n- 喷雾要喷匀叶背叶面，发病中心重点处理\n\n**四、一个前提提醒**\n用药前建议先确诊。炭疽病与蔓枯病、靶斑病等症状有相似处，用错药既浪费又可能延误。方便的话请上传一张**病叶正面清晰照片**（能看清病斑形状、颜色，必要时加拍叶背），我调用诊断服务出具带来源编号的报告，再交给用药安全顾问开具体方案。\n\n如果您告诉我**距采收还有多少天**，用药安全顾问能更准确地帮您筛安全间隔期合适的药剂。\n\n---\n**下一步建议**：① 上传病叶照片做确诊；② 需要具体药剂剂量与安全间隔期方案 → 我可以帮您转接**用药安全顾问**；③ 若棚内已大面积蔓延，请直接告诉我，我这边按紧急情况升级处理。",
+        "agent_type": "diagnosis",
+        "intent": "medication_advice",
+        "turn": 0,
+        "conv_id": "eval_1",
+        "judge_failed": true,
+        "judge_error": "Expecting value: line 1 column 1 (char 0)"
+      }
+    },
+    {
+      "test_id": "dialog_2",
+      "passed": true,
+      "scores": {
+        "relevance": 0.95,
+        "accuracy": 0.95,
+        "completeness": 0.75,
+        "helpfulness": 0.8,
+        "diagnosis_accuracy": 0.95,
+        "medication_safety": 1.0,
+        "overall": 0.9
+      },
+      "detail": "Q: 我家黄瓜叶子有白粉层，这是什么病，怎么治... → 综合评分 0.900",
+      "metadata": {
+        "question": "我家黄瓜叶子有白粉层，这是什么病，怎么治",
+        "response": "**结论**\n从您描述的“叶片有白粉层”来看，最符合**黄瓜白粉病**的典型表现，但仅凭文字描述还不能确诊，**确诊需要一张清晰的病叶照片**。白粉病早期和霜霉病早期、叶面药渍或灰尘有时容易混淆，需要照片来核验。\n\n**依据**\n- 白粉病叶面初生白色近圆形小粉斑，扩大后连成边缘不明显的白粉斑，严重时整叶布满白粉，后期变灰白色并出现黑色小点，叶片变黄枯死 [KB-PM-001]。\n- 通风差、湿度大且温度适宜时较易发生，中下部叶片往往先受害。\n- 如果表现为叶背薄、正面厚的一层白粉状霉层，也更符合这个方向。\n\n**为了确诊，请补充 3 项**\n1. 一张清晰的病叶正面照片，能看清粉斑形状、颜色和边界，有条件再加拍叶背；\n2. 发病部位：上部嫩叶还是下部老叶；\n3. 发现大概几天、棚内是否在扩散，以及大概多少比例的植株出现。\n\n**现在可以先做的管理措施（非用药）**\n- 摘除严重发病的老叶并带出棚外销毁，避免扩散；\n- 加强通风透光，降低棚内湿度，避免夜间叶面长时间结露；\n- 合理密植，平衡施肥，控制氮肥用量，避免植株徒长 [KB-PM-003]。\n\n**注意事项**\n具体打什么药、用多大剂量、采收前安全间隔期属于用药安全范畴，我这边不直接开具处方；上传照片确诊后，可以帮您转用药安全顾问核对方案。如果棚内已经大面积蔓延、有绝收风险，请直接说明，我会按紧急情况处理，并帮您申请人工专家复核。",
+        "agent_type": "diagnosis",
+        "intent": "disease_diagnosis",
+        "turn": 0,
+        "conv_id": "eval_2",
+        "judge_failed": false,
+        "judge_error": null
+      }
+    }
+  ]
+}
