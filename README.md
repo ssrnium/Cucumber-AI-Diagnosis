@@ -1,14 +1,39 @@
-# 黄瓜叶片病害智能识别与可信辅助诊断平台
+# 🥒 Cucumber AI Diagnosis Platform
 
-> 面向设施黄瓜种植的病害辅助诊断系统：上传叶片照片，由论文冻结的改进 YOLO（E2_gfix）真实检测病斑，检索农技知识库并**受控生成**带来源追溯的诊断报告（12 项事实一致性校验 + 骨架回退）；支持用户纠错反馈、低置信度自动专家复核、知识库与模型版本管理，形成"诊断 → 反馈 → 复核 → 迭代"的闭环。
+> 基于计算机视觉、多模态知识增强与自主 Agent Runtime 构建的农业 AI 诊断平台。系统以自主设计的 **EchoMind 多 Agent 编排运行时**为智能中枢，融合改进 YOLO、RAG、LLM 受控生成与专家反馈机制，实现从图像识别、知识检索到智能决策的完整 AI 应用闭环。
 >
 > 当前版本 **v0.3.0**：检测与报告均为**真实链路**（内置冻结权重与训练侧运行时），项目状态详见 [PROJECT_STATUS.md](PROJECT_STATUS.md)。
+
+```text
+黄瓜叶片图像输入
+        ↓
+改进 YOLO 病害检测
+        ↓
+农业知识检索与证据构建
+        ↓
+EchoMind 多 Agent 协作诊断
+        ↓
+可信报告生成与事实校验
+        ↓
+用户反馈 / 专家复核 / 持续迭代
+```
+
+项目集中体现一条完整的 AI 全栈技术路线：
+
+- **视觉模型**：定位病斑，输出病害类别、检测框、置信度与推理耗时
+- **知识增强**：检索论文知识库，以可追溯证据约束诊断内容
+- **Agent 编排**：通过 EchoMind 完成意图识别、路由、工具调用、记忆与评测
+- **业务闭环**：连接用户诊断、专家复核、知识管理、模型管理和反馈迭代
 
 ![真实检测与诊断报告](docs/screenshots/real-model-upload.png)
 
 | 来源追溯 | 低置信自动复核 | 农技诊断 Agent |
 | --- | --- | --- |
 | ![来源追溯](docs/screenshots/real-kb-source.png) | ![低置信复核](docs/screenshots/review-uncertain.png) | ![智能体对话](docs/screenshots/14-agent-chat.png) |
+
+## 项目背景
+
+传统农业病害诊断依赖人工经验，普遍面临专业知识门槛高、诊断效率低、信息来源分散以及建议难以标准化等问题。本项目将视觉检测结果作为诊断起点，以农业知识证据约束大模型生成，并通过 Agent 编排和专家反馈机制提高结果的可解释性、可追踪性与可持续优化能力。
 
 ## 系统架构
 
@@ -18,7 +43,7 @@ flowchart LR
     Web -->|REST /api| Admin[cucumber-admin<br/>Spring Boot 3 + Security + MyBatis-Plus]
     Admin -->|检测/诊断 HTTP| AI[cucumber-ai<br/>FastAPI<br/>E2_gfix 检测 + 受控生成]
     Web -->|/api/v1/agent/*| Admin
-    Admin -->|JWT 代理 + 审计 + user_id 透传| Agent[cucumber-agent<br/>EchoMind 二开<br/>意图识别→四角色编排→工具治理→记忆→监控评测]
+    Admin -->|JWT 代理 + 审计 + user_id 透传| Agent[cucumber-agent<br/>EchoMind Runtime 农业领域化<br/>意图识别→四角色编排→工具治理→记忆→监控评测]
     Agent -->|诊断/记录/反馈工具| AI
     Agent -->|svc-agent 服务账号| Admin
     Agent --> Chroma[(ChromaDB<br/>知识库+情景记忆)]
@@ -38,8 +63,79 @@ flowchart LR
 | 前端 | cucumber-web | Vue 3.5 + TypeScript + Vite 5 + Element Plus 2.8 + Pinia + Vue Router + ECharts |
 | 业务后端 | cucumber-admin | Java 17 + Spring Boot 3.3.4 + Spring Security(JWT) + MyBatis-Plus + PostgreSQL + Redis + RabbitMQ + springdoc-openapi |
 | AI 服务 | cucumber-ai | Python 3.9 + FastAPI + Pydantic v2 + torch 2.8 + **vendor 训练侧运行时（ultralytics 8.4.90 + 融合模块）** + OpenAI 兼容 SDK（Kimi k3 / DeepSeek） |
-| 智能体编排 | cucumber-agent | Python 3.9 + FastAPI + Anthropic 兼容 SDK（DeepSeek）+ ChromaDB + Redis，基于 EchoMind 领域二开 |
+| 智能体编排 | cucumber-agent | Python 3.9 + FastAPI + Anthropic 兼容 SDK（DeepSeek）+ ChromaDB + Redis，基于自主设计的 EchoMind Runtime 进行农业领域适配 |
 | 基础设施 | docker-compose | PostgreSQL 16(pgvector) + Redis 7 + RabbitMQ 3 + ChromaDB 0.5.23 + Nginx（+ 可选 Prometheus，profiles: monitor） |
+
+## 核心能力
+
+### 1. AI 病害视觉检测
+
+上传黄瓜叶片图片后，系统调用论文冻结的改进 YOLO11n（E2_gfix）定位病斑，并返回病害类别、检测框、置信度、模型版本和推理耗时。图像内容哈希用于识别重复上传，避免重复推理与重复记录。
+
+```text
+Image → E2_gfix Detection → Disease Candidate → Diagnosis Pipeline
+```
+
+### 2. RAG 农业知识增强
+
+视觉模型负责回答“可能是什么病”，知识增强链路进一步为“为什么这样判断、如何处理、有哪些安全注意事项”提供依据。系统围绕病害特征、防治方法与农业规范检索知识，并将合法 `source_id` 注入生成上下文，使诊断结论能够追溯到知识库原文。
+
+```text
+用户问题 / 检测结果 → 查询改写 → 知识检索 → 证据重排 → 上下文注入 → 诊断生成
+```
+
+### 3. EchoMind 多 Agent 智能诊断层
+
+EchoMind 是本项目自主设计的多 Agent 编排运行时，用于将意图识别、知识检索、路由决策、工具治理、记忆、监控和评测串成完整链路，而非仅进行 Prompt 拼接。在通用 Runtime 之上，`cucumber-agent` 完成农业领域适配，形成诊断、防治、用药和人工升级四类角色协作。
+
+```text
+用户请求
+   ↓
+三路融合意图识别
+   ↓
+路由决策（单 Agent / 主辅并行）
+   ↓
+工具调用 + RAG 检索
+   ↓
+Composer 响应合并
+   ↓
+记忆回写
+   ↓
+Monitor 监控 / Evaluation 评测反馈
+```
+
+EchoMind 的核心设计包括：
+
+- 多 Agent 路由与角色契约编排
+- 工具缓存、熔断、查询改写与结果重排
+- Redis / ChromaDB 三层记忆管理
+- Skills 动态注入与农业领域能力扩展
+- 在线 Monitor、异常检测与路由罚分
+- LLM-as-Judge 自动评测
+
+### 4. 可信诊断与专家反馈闭环
+
+系统不直接输出自由生成文本，而是执行“检索 → 骨架 → 润色 → 12 项事实一致性校验 → 纠错重润 → 骨架回退”的受控生成流程。低置信或无检出的诊断自动进入专家复核，用户也可主动提交纠错反馈，最终形成“诊断 → 反馈 → 复核 → 迭代”的业务闭环。
+
+```text
+检测结果 → 知识证据 → 结构化骨架 → LLM 受控润色 → 事实校验 → 可追溯诊断报告
+```
+
+## Agent Framework Evolution
+
+EchoMind 提供通用智能体基础设施，`cucumber-agent` 负责将其意图体系、角色、工具、知识、记忆与评测能力适配到农业诊断场景：
+
+```text
+EchoMind 通用多 Agent Runtime
+              ↓
+农业领域意图 / 角色 / Tools / Skills 适配
+              ↓
+        cucumber-agent
+              ↓
+黄瓜病害识别、知识增强与专家复核业务系统
+```
+
+这条演进路径体现了从通用 Agent 基础设施到垂直领域 AI 应用的工程化落地能力。
 
 ## 快速开始
 
@@ -83,7 +179,7 @@ cd cucumber-web
 npm install
 npm run dev                # 端口 5173，已配置 /api 与 /files 代理到 8080
 
-# 4. 智能体服务（可选，Python 3.9+；/chat 必须配 ANTHROPIC_API_KEY）
+# 4. 智能体服务（可选，Python 3.9+；EchoMind Runtime，/chat 必须配 ANTHROPIC_API_KEY）
 cd cucumber-agent
 python -m venv .venv && .venv/Scripts/pip install -r echomind/requirements.txt
 # 在 cucumber-agent/.env 写入 ANTHROPIC_API_KEY（见 cucumber-agent/README.md）
@@ -119,7 +215,7 @@ cd echomind && ../.venv/Scripts/python -m uvicorn api.main:app --port 8002
 
 登录（JWT）→ 上传叶片图片（内容哈希去重）→ E2_gfix 真实检测（病斑框/类别/置信度/耗时）→ 知识显式映射检索（28 个合法来源）→ 受控生成五段式报告（结论/依据/农艺/化防/安全 + 不确定性说明）→ 来源编号可追溯知识原文 → 低置信自动转专家复核 / 用户主动纠错反馈 → 专家复核闭环 → 操作日志与模型版本关联 → 看板统计。
 
-智能体链路（cucumber-agent，EchoMind 二开）：对话消息 → 三路融合意图识别 → 四角色 Agent 路由（诊断/防治/用药/人工升级，主辅并行 + Composer 合并）→ 工具治理层（缓存/熔断/改写重排）调平台 API → 带来源编号的回答 → Redis/Chroma 三层记忆 → 在线监控（Z-score + 路由罚分）与 LLM-as-Judge 评测。
+智能体链路（cucumber-agent，EchoMind 农业领域化）：对话消息 → 三路融合意图识别 → 四角色 Agent 路由（诊断/防治/用药/人工升级，主辅并行 + Composer 合并）→ 工具治理层（缓存/熔断/改写重排）调平台 API → 带来源编号的回答 → Redis/Chroma 三层记忆 → 在线监控（Z-score + 路由罚分）与 LLM-as-Judge 评测。
 
 ## 演示脚本（3-5 分钟主链路）
 
@@ -165,16 +261,20 @@ cucumber-diagnosis-platform/
 │   ├── weights/E2_gfix.pt        # 论文冻结权重（已入库，sha256 d9e4ce25…）
 │   ├── data/disease_knowledge.json  # 论文嵌套知识库（28 个合法 source_id）
 │   └── tests/                    # pytest 26 项（含受控生成迁移测试）
-├── cucumber-agent/               # 智能体编排服务（EchoMind 二开，端口 8002）
+├── cucumber-agent/               # EchoMind Runtime 的农业领域应用（端口 8002）
 └── cucumber-web/                 # Vue3 前端（诊断/记录/复核/知识库/模型/系统/智能体）
 ```
 
-## 母版来源声明
+## EchoMind 与 cucumber-agent
 
-`cucumber-agent/echomind/` 基于 EchoMind（https://github.com/Biscuit-AI531/EchoMind，客服多 Agent 编排运行时，无 LICENSE）vendor 二开：保留意图三路融合、角色契约编排、工具治理、三层记忆、监控评测机制；替换为黄瓜病害领域的意图体系、四角色、平台工具、28 条知识种子（源自论文第六章知识库）与 4 个领域 Skill。
+[EchoMind](https://github.com/Biscuit-AI531/EchoMind) 是自主设计的通用多 Agent 编排运行时，负责意图识别、角色契约编排、工具治理、三层记忆、监控与评测。`cucumber-agent/echomind/` 将该 Runtime 集成到本项目，并适配为黄瓜病害领域的意图体系、四类 Agent 角色、平台工具、28 条知识种子（源自论文第六章知识库）与 4 个领域 Skill。
 
 ## 状态与边界说明
 
 - 检测（E2_gfix）与报告（受控生成）均为**真实链路**；LLM 未配置时自动降级为确定性骨架（`report_status=fallback_to_skeleton`），链路始终可交付。
 - Docker compose 编排与 RabbitMQ 异步诊断链路**尚未在本机验证**（本机无 Docker，当前均为便携件本地直跑）；其余链路均有浏览器级与接口级验证记录（docs/验收报告_20260912.md）。
 - 本项目为持续开发中的秋招作品集项目，不声称商业落地或大规模生产验证；指标数字均标注口径（见模型版本页与 PROJECT_STATUS.md）。
+
+## 一句话总结
+
+> 基于改进 YOLO、可追溯知识增强和自主 EchoMind 多 Agent Runtime 构建的农业 AI 诊断平台，实现从图像识别、知识检索、可信生成到专家反馈的完整 AI 应用闭环。
