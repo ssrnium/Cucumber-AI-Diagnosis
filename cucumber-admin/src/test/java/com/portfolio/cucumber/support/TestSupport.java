@@ -2,10 +2,14 @@ package com.portfolio.cucumber.support;
 
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
+import com.portfolio.cucumber.modules.agent.entity.AgentMessage;
+import com.portfolio.cucumber.modules.agent.entity.AgentSession;
 import com.portfolio.cucumber.modules.diagnosis.entity.DiagnosisFeedback;
 import com.portfolio.cucumber.modules.diagnosis.entity.DiagnosisRecord;
 import com.portfolio.cucumber.modules.model.entity.ModelVersion;
 import com.portfolio.cucumber.modules.system.entity.SysOperationLog;
+import com.portfolio.cucumber.modules.system.entity.SysRole;
+import com.portfolio.cucumber.modules.system.entity.SysUser;
 import com.portfolio.cucumber.security.LoginUser;
 import org.apache.ibatis.builder.MapperBuilderAssistant;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,6 +34,10 @@ public final class TestSupport {
         init(assistant, DiagnosisFeedback.class);
         init(assistant, ModelVersion.class);
         init(assistant, SysOperationLog.class);
+        init(assistant, SysUser.class);
+        init(assistant, SysRole.class);
+        init(assistant, AgentSession.class);
+        init(assistant, AgentMessage.class);
     }
 
     private static void init(MapperBuilderAssistant assistant, Class<?> entityClass) {
