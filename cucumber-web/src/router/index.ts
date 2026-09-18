@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { ElMessage } from 'element-plus'
+import { useUserStore } from '../stores/user'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -95,6 +97,13 @@ router.beforeEach((to) => {
   }
   if (to.path === '/login' && token) {
     return '/'
+  }
+  // 路由级权限校验：meta.perm 与登录返回的 perms 精确匹配（与侧边菜单过滤同一口径），
+  // 无权限时提示并回首页，避免手敲 URL 越权进入页面（后端接口仍有鉴权兜底）
+  const perm = to.meta.perm as string | undefined
+  if (perm && !useUserStore().hasPerm(perm)) {
+    ElMessage.warning('没有该页面的访问权限')
+    return '/dashboard'
   }
   document.title = `${to.meta.title || ''} - 黄瓜病害诊断平台`
   return true
