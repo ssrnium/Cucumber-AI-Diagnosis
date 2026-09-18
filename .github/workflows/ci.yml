@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  admin-test:
+    name: cucumber-admin (Spring Boot) mvn test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+      - name: mvn test
+        working-directory: cucumber-admin
+        run: mvn -B test
+
+  ai-test:
+    name: cucumber-ai (FastAPI) pytest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+          cache: pip
+          cache-dependency-path: cucumber-ai/requirements.txt
+      - name: install dependencies
+        working-directory: cucumber-ai
+        run: pip install -r requirements.txt
+      - name: pytest
+        working-directory: cucumber-ai
+        env:
+          LLM_PROVIDER: mock
+        run: pytest tests/ -q
+
+  agent-test:
+    name: cucumber-agent (FastAPI) pytest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: cucumber-agent/echomind/requirements.txt
+      - name: install dependencies
+        working-directory: cucumber-agent/echomind
+        run: pip install -r requirements.txt pytest
+      - name: pytest
+        working-directory: cucumber-agent/echomind
+        run: pytest tests/ -q
+
+  web-build:
+    name: cucumber-web (Vue3) type-check + build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: cucumber-web/package-lock.json
+      - name: npm ci
+        working-directory: cucumber-web
+        run: npm ci
+      - name: build (含 vue-tsc type-check 前置)
+        working-directory: cucumber-web
+        run: npm run build

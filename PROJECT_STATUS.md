@@ -8,7 +8,7 @@
 |---|---|
 | 诊断是否为 Mock | **否（全链路真实）**。检测：E2_gfix 论文冻结权重（`E2_gfix:ch4v22` ACTIVE）；报告：论文 agent_v1 受控生成流水线（六步），LLM 润色默认 **Kimi k3**（论文第六章同端点），12 项校验 + 确定性骨架回退；智能体：DeepSeek `deepseek-flash` |
 | 已验证运行环境 | Windows 11 本地：便携 PostgreSQL 16.10 + 便携 Redis 5.0.14 + JDK 17.0.2 + Node 24 + Python 3.9 venv（torch 2.8.0 + vendor ultralytics 8.4.90）；**Docker 未安装，compose 链路未验证** |
-| 已通过测试 | 浏览器主链路 17/17（d1）；异常场景 17/17（d2）；**ai pytest 26 passed**（含受控生成 24 项迁移测试）；agent pytest 13 passed；admin BUILD SUCCESS；web `npm run build` 绿 |
+| 已通过测试 | 浏览器主链路 17/17（d1）；异常场景 17/17（d2）；**ai pytest 26 passed**（含受控生成 24 项迁移测试）；agent pytest 13 passed；**admin mvn test 36 项全绿**；web `npm run build` 绿（含 vue-tsc type-check 前置） |
 | 真实链路实测 | test301 检测冒烟：100% 有检出、均值 57ms；Kimi k3 真实润色：报告 status=polished、来源 9-11 个真实 KB 编号、端到端 40-50s（含纠错重润）；低置信（空白图）→ 健康叶 0.0 → 自动复核单创建 → 专家页"低置信复核"标签 |
 | 下一阶段入口 | 评测数据补充（agent `/eval/run` 真实跑分）/ Docker 全栈 / 奶牛项目 |
 
@@ -29,7 +29,7 @@
 13. git 阶段提交。
 14. 文档与资产收尾（2026-09-12 晚）：README 重写（论文资产集成现状表 + 4 张真实截图 + 主链路演示脚本，消除"插入点/Mock 骨架"过时表述）、验收报告与截图归档 docs/、E2_gfix 权重入库 git、ai Dockerfile 补齐 vendor/weights、docs/项目状态详录_20260914.md（含运行手册与坑位清单）。
 15. 评测与备用通道（2026-09-14）：**智能体真实评测**（15 条意图用例 100%/Macro-F1 1.0，对话 Judge 六维 0.58-0.67，基线建立，见 docs/评测记录_20260914.md 与 eval_run_20260914.json）；**DeepSeek 备用通道联调**（LLM_PROVIDER=deepseek 下受控生成 polished、12 项校验全过、端到端 15s，与 Kimi 解耦成立）。
-16. 面试官视角强化（2026-09-18）：**cucumber-admin 单元测试 18 项**（诊断去重/权限边界/文件类型/AI 宕机/反馈流转/低置信复核/模型激活互斥/日志查询，mvn test 全绿）；**操作日志前端查询页**（系统管理→操作日志，admin 权限，菜单按权过滤）；来源弹窗加载骨架屏（消除"未查询到"闪现）。
+16. 面试官视角强化（2026-09-18）：**cucumber-admin 单元测试 36 项**（诊断去重/权限边界/文件类型/AI 宕机/反馈流转/低置信复核/模型激活互斥/日志查询 + 智能体对话转发与审计/登录签发 JWT/JWT 过期与篡改验签/MQ 生产消费成败路径，mvn test 全绿）；**操作日志前端查询页**（系统管理→操作日志，admin 权限，菜单按权过滤）；来源弹窗加载骨架屏（消除"未查询到"闪现）。
 
 ## 正在开发（下一阶段）
 
