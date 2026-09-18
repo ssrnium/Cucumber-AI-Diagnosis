@@ -16,6 +16,7 @@ cucumber-agent/.env
 cucumber-agent/.venv/
 cucumber-agent/**/__pycache__/
 cucumber-agent/**/.pytest_cache/
+cucumber-agent/data/chroma/
 cucumber-agent/echomind/data/chroma/
 cucumber-agent/echomind/data/eval/
 cucumber-agent/echomind/logs/
@@ -29,3 +30,6 @@ cucumber-web/dist/
 .idea/
 .vscode/
 .DS_Store
+
+# ---- 备份文件 ----
+*.bak.*

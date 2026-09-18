@@ -51,6 +51,7 @@ services:
     build: ./cucumber-ai
     container_name: cucumber-ai
     environment:
+      # 本地一键起默认 mock 润色，便于无 Key 演示；生产置 deepseek 走真实 LLM 链路
       LLM_PROVIDER: mock
       KIMI_API_KEY: ${KIMI_API_KEY:-}
     ports:
