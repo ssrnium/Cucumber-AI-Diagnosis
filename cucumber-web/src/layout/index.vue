@@ -54,7 +54,8 @@ const menus = [
   { path: '/knowledge/admin', title: '知识库管理', icon: 'EditPen', perm: 'knowledge:manage' },
   { path: '/model', title: '模型版本', icon: 'Cpu', perm: 'model:manage' },
   { path: '/system/user', title: '用户管理', icon: 'User', perm: 'system:user:list' },
-  { path: '/system/role', title: '角色管理', icon: 'UserFilled', perm: 'system:role:list' }
+  { path: '/system/role', title: '角色管理', icon: 'UserFilled', perm: 'system:role:list' },
+  { path: '/system/log', title: '操作日志', icon: 'Tickets', perm: 'system:log:list' }
 ]
 
 const visibleMenus = computed(() =>

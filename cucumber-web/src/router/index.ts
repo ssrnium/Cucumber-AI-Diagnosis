@@ -72,6 +72,11 @@ const router = createRouter({
           path: 'system/role',
           component: () => import('../views/system/role/index.vue'),
           meta: { title: '角色管理', perm: 'system:role:list' }
+        },
+        {
+          path: 'system/log',
+          component: () => import('../views/system/log/index.vue'),
+          meta: { title: '操作日志', perm: 'system:log:list' }
         }
       ]
     },

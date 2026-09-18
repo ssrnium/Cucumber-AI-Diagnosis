@@ -36,3 +36,7 @@ export const rolePerms = (id: number) => request.get(`/api/v1/system/role/${id}/
 
 export const roleAssignPerms = (id: number, perms: string[]) =>
   request.put(`/api/v1/system/role/${id}/perms`, { perms })
+
+// ---------- 操作日志 ----------
+export const operationLogList = (params: { page: number; size: number; username?: string }) =>
+  request.get('/api/v1/system/log', { params })

@@ -59,7 +59,10 @@
 
     <el-dialog v-model="sourceDialogVisible" :title="`来源原文：${currentSource?.source_id || ''}`"
                width="520px">
-      <template v-if="currentSource">
+      <template v-if="sourceLoading">
+        <el-skeleton :rows="4" animated />
+      </template>
+      <template v-else-if="currentSource">
         <h4>{{ currentSource.title }}
           <el-tag size="small">{{ currentSource.level }} 级 / {{ currentSource.category }}</el-tag>
         </h4>
@@ -138,16 +141,20 @@ const onDiagnose = async () => {
 
 // 来源追溯：按 source_id 从业务库知识条目查询原文
 const sourceDialogVisible = ref(false)
+const sourceLoading = ref(false)
 const currentSource = ref<any>(null)
 const showSource = async (sourceId: string) => {
   currentSource.value = null
   sourceDialogVisible.value = true
+  sourceLoading.value = true
   try {
     const res: any = await knowledgeList({ page: 1, size: 5, keyword: sourceId })
     const entry = (res.data?.list || []).find((item: any) => item.source_id === sourceId)
     currentSource.value = entry || null
   } catch {
     currentSource.value = null
+  } finally {
+    sourceLoading.value = false
   }
 }
 </script>

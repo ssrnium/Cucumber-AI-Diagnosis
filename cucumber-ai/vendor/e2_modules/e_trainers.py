@@ -11,12 +11,17 @@ Full-load guarantee: get_model asserts EVERY checkpoint tensor is transferred
 
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 
 import torch
 
-WS = Path("D:/chines-clip-nnn/chapter5_multimodal")
+# 训练侧工程根（内含 02_visual_runtime / 06_multiscale_fusion / 07_region_alignment），
+# 由环境变量 E2_WS 指定。未设置时回退到本目录：此时下面注入的三个路径不存在，
+# Python 会直接跳过（无害），region_text_loss / text_guided_fusion 由同目录下的
+# vendor 副本提供——该副本与训练侧原件逐字节一致（SHA256 相同）。
+WS = Path(os.environ.get("E2_WS") or Path(__file__).resolve().parent)
 sys.path.insert(0, str(WS / "02_visual_runtime/ultralytics_isolated"))
 sys.path.insert(0, str(WS / "06_multiscale_fusion"))
 sys.path.insert(0, str(WS / "07_region_alignment"))
