@@ -31,6 +31,7 @@
 15. 评测与备用通道（2026-09-14）：**智能体真实评测**（15 条意图用例 100%/Macro-F1 1.0，对话 Judge 六维 0.58-0.67，基线建立，见 docs/评测记录_20260914.md 与 eval_run_20260914.json）；**DeepSeek 备用通道联调**（LLM_PROVIDER=deepseek 下受控生成 polished、12 项校验全过、端到端 15s，与 Kimi 解耦成立）。
 16. 面试官视角强化（2026-09-18）：**cucumber-admin 单元测试 36 项**（诊断去重/权限边界/文件类型/AI 宕机/反馈流转/低置信复核/模型激活互斥/日志查询 + 智能体对话转发与审计/登录签发 JWT/JWT 过期与篡改验签/MQ 生产消费成败路径，mvn test 全绿）；**操作日志前端查询页**（系统管理→操作日志，admin 权限，菜单按权过滤）；来源弹窗加载骨架屏（消除"未查询到"闪现）。
 17. 全量评测落地（2026-09-20）：评测集扩充至 **108 意图 + 22 对话 + 26 RAG 用例**（`echomind/evaluation/eval_cases.json`，含跨病害混淆/紧急措辞/禁限用诱导/非黄瓜对抗样本），配套脚本 `run_full_eval.py` 直调 evaluator 真实跑分（DeepSeek deepseek-chat，约 4.5 分钟）：意图 Accuracy 98.15%（106/108）、Macro-F1 0.9845，Judge 六维 0.77-1.00（medication_safety 满分，judge_failed=0——09-14 Judge 全失败的根因是 deepseek-flash 端点不可用，已改用 deepseek-chat），综合通过率 93.33%，回归对比无退化；RAG 裸检索 Recall@5=0.2609（28 条种子 + 内置英文 embedding 的真实下限，改进方向已记录）。报告 `docs/评测报告_20260920.md` + 原始 JSON/日志；同步建立 `prompts/` 登记册（12 个 prompt 的用途/模型/温度/代码位置/关联评测）与 `docs/interview.md` 面试手册。
+18. 诊断上传页重构与浏览器实证（2026-09-20）：**候选排序列表**（detections 按类别聚合 top-N，点击联动检测框高亮/半透明）、**三 tab 结果区**（图文依据/诊断说明/下一步建议）、**不确定性提示条**（首位 <65% 或与次位分差 <20%，阈值注释对齐后端 0.75 自动复核口径）、候选对比弹窗、扫描加载动画（三阶段文案 + 可取消，runId 令牌防迟到结果覆盖）、空态示例图引导（真实叶片图走完整诊断流）、症状快捷 chips + 输入修改后重诊提醒、TXT 报告导出；**验收脚本入库 `acceptance/`**（d1/d2/cucumber_eval_run/verify_upload_0920/verify_upload_blank），新增重构验证 11/11 通过 + 空白图"未检出"降级验证通过，实证截图 `docs/screenshots/diagnosis-candidates.png`、`diagnosis-blank.png`。
 
 ## 正在开发（下一阶段）
 
@@ -64,9 +65,11 @@ npm run build                                        # cucumber-web
 # 单测
 cucumber-ai/.venv/Scripts/python -m pytest tests/    # 26 项（含受控生成迁移测试）
 cucumber-agent/.venv/Scripts/python -m pytest tests/ # 13 项（在 echomind/ 目录）
-# 验收
-tools/pw-venv/Scripts/python tools/acceptance/d1_main.py
-tools/pw-venv/Scripts/python tools/acceptance/d2_exceptions.py
+# 验收（脚本已入库 acceptance/）
+tools/pw-venv/Scripts/python acceptance/d1_main.py
+tools/pw-venv/Scripts/python acceptance/d2_exceptions.py
+tools/pw-venv/Scripts/python acceptance/verify_upload_0920.py   # 诊断页重构验证 11 项
+tools/pw-venv/Scripts/python acceptance/verify_upload_blank.py  # 空白图降级验证
 # 真实链路冒烟
 # POST localhost:8000/api/v1/diagnose（detections 来自 /detect）→ report_status=polished
 ```

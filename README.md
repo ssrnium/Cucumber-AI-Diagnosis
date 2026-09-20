@@ -31,6 +31,10 @@ EchoMind 多 Agent 协作诊断
 | --- | --- | --- |
 | ![来源追溯](docs/screenshots/real-kb-source.png) | ![低置信复核](docs/screenshots/review-uncertain.png) | ![智能体对话](docs/screenshots/14-agent-chat.png) |
 
+| 候选排序与三栏结果区（09-20 重构，实证） | 空白图降级提示（实证） |
+| --- | --- |
+| ![候选排序与三栏结果区](docs/screenshots/diagnosis-candidates.png) | ![空白图降级](docs/screenshots/diagnosis-blank.png) |
+
 ## 项目背景
 
 传统农业病害诊断依赖人工经验，普遍面临专业知识门槛高、诊断效率低、信息来源分散以及建议难以标准化等问题。本项目将视觉检测结果作为诊断起点，以农业知识证据约束大模型生成，并通过 Agent 编排和专家反馈机制提高结果的可解释性、可追踪性与可持续优化能力。
