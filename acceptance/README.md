@@ -9,6 +9,7 @@
 | `cucumber_eval_run.py` | 智能体 `/eval/run` 评测跑分（需有效 LLM key） | 见 `docs/评测记录_20260914.md`、`docs/评测报告_20260920.md` |
 | `verify_upload_0920.py` | 诊断上传页重构验证（候选列表/三 tab/不确定性/对比/导出） | 11/11 通过（2026-09-20） |
 | `verify_upload_blank.py` | 空白图"未检出"降级路径验证 | 通过（2026-09-20） |
+| `cucumber_demo_record.py` | 46s 演示视频录制（Playwright recordVideo，登录→上传诊断→候选三栏→来源弹窗→智能体真实对话） | 已录制（2026-09-20，GIF 见 `docs/screenshots/demo-cucumber-20260920.gif`） |
 
 ## 运行前置
 

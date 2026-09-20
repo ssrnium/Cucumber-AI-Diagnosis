@@ -25,6 +25,8 @@ EchoMind 多 Agent 协作诊断
 - **Agent 编排**：通过 EchoMind 完成意图识别、路由、工具调用、记忆与评测
 - **业务闭环**：连接用户诊断、专家复核、知识管理、模型管理和反馈迭代
 
+![演示 GIF（46 秒全流程：登录 → 看板 → 上传诊断（扫描动画）→ 候选与三栏结果区 → 来源弹窗 → 智能体对话真实问答，2026-09-20 录制）](docs/screenshots/demo-cucumber-20260920.gif)
+
 ![真实检测与诊断报告](docs/screenshots/real-model-upload.png)
 
 | 来源追溯 | 低置信自动复核 | 农技诊断 Agent |
