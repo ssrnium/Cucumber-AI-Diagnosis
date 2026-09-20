@@ -1,0 +1,12 @@
+name: cucumber-ai-report-polish-system
+version: v1.0 (2026-09-20 登记)
+purpose: 受控诊断报告的 LLM 润色 system 指令——限定 LLM 只做语言组织，不得修改 protected_fields、不得添加知识库外信息、输出合法 JSON
+service: cucumber-ai
+code_location: cucumber-ai/app/services/prompts.py (SYSTEM_MSG, L10-13)
+model: Kimi k3（默认，论文同端点 https://api.kimi.com/coding/v1）/ DeepSeek V4.1 Flash（备用，LLM_PROVIDER=deepseek）
+temperature: 1.0（k3 端点约束，DeepSeek 通道同管线同参数）
+max_tokens: 2048
+notes: 原文逐字保留自论文第六章 llm_client.py；与 validators.py 12 项校验一一对应，改一个字都可能改变幻觉率口径
+eval_link: docs/验收报告_20260912.md（受控生成 polished 链路）；幻觉率 0.22% 为论文第六章口径
+changelog:
+  - v1.0: 2026-09-20 初次登记（prompt 原文自论文迁移以来未变）

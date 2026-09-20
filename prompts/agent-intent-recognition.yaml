@@ -1,0 +1,12 @@
+name: agent-intent-recognition
+version: v1.0 (2026-09-20 登记)
+purpose: 三路融合意图识别的 LLM 语义理解路（权重 70%）——Few-shot 示例 + 意图定义 + 上下文，输出 {intent, confidence, reasoning} JSON
+service: cucumber-agent
+code_location: cucumber-agent/echomind/core/intent_recognizer.py (L226-242, _llm_recognize)
+model: ANTHROPIC_MODEL（评测运行时为 DeepSeek deepseek-chat，Anthropic 兼容端点）
+temperature: 0.1
+max_tokens: 1024
+notes: 六意图：disease_diagnosis/prevention_qa/medication_advice/human_handoff/greeting/other；用药与防治拿不准时，提到具体药剂/用量/间隔期优先 medication_advice（prompt 内置规则）
+eval_link: docs/评测报告_20260920.md 意图识别指标（108 用例 Accuracy / 每类 P/R/F1）
+changelog:
+  - v1.0: 2026-09-20 初次登记

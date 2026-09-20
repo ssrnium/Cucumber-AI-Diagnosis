@@ -1,0 +1,12 @@
+name: memory-profile-summary
+version: v1.0 (2026-09-20 登记)
+purpose: 记忆层三个 LLM prompt——用户画像提炼（preferences/entities JSON）、工作记忆压缩摘要（2-3 句）、摘要合并（限长合并）
+service: cucumber-agent
+code_location: cucumber-agent/echomind/memory/conversation_memory.py (L236 画像提炼 / L332 摘要 / L512 摘要合并)
+model: ANTHROPIC_MODEL
+temperature: 0.0
+max_tokens: 1024
+notes: 摘要生成失败回退"对话包含 N 条消息"占位文本
+eval_link: 未纳入本轮评测（记忆链路非 2026-09-20 评测范围）
+changelog:
+  - v1.0: 2026-09-20 初次登记

@@ -1,0 +1,12 @@
+name: agent-medication-system
+version: v1.0 (2026-09-20 登记)
+purpose: 用药安全 Agent system prompt——只推荐黄瓜登记杀菌剂类别、强制安全间隔期与轮换用药提醒、禁限用农药明确拒绝、不替代处方
+service: cucumber-agent
+code_location: cucumber-agent/echomind/agents/agent_orchestrator.py (MedicationAgent.system_prompt, L496-500；AgentProfile L484-495)
+model: ANTHROPIC_MODEL（可用 ECHOMIND_MEDICATION_MODEL 覆盖）
+temperature: 0.0
+max_tokens: 1600
+notes: 合规边界同时在用药 Skill 与 Judge 的 medication_safety 维度中定义
+eval_link: docs/评测报告_20260920.md medication_safety 维度
+changelog:
+  - v1.0: 2026-09-20 初次登记

@@ -1,0 +1,12 @@
+name: agent-diagnosis-system
+version: v1.0 (2026-09-20 登记)
+purpose: 诊断分诊 Agent system prompt——前台分诊、引导上传叶片照片、解读受控报告（保留 source_id）、超范围时移交对应专业 Agent
+service: cucumber-agent
+code_location: cucumber-agent/echomind/agents/agent_orchestrator.py (DiagnosisAgent.system_prompt, L432-437；角色契约 AgentProfile L421-431)
+model: ANTHROPIC_MODEL（可用 ECHOMIND_DIAGNOSIS_MODEL 覆盖）
+temperature: 0.3
+max_tokens: 1600
+notes: 角色契约（mission/workflow/输入输出契约/移交条件）在 AgentProfile 中，随 system prompt 一并注入
+eval_link: docs/评测报告_20260920.md 对话质量（diagnosis 类用例 Judge 分）
+changelog:
+  - v1.0: 2026-09-20 初次登记

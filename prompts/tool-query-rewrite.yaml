@@ -1,0 +1,12 @@
+name: tool-query-rewrite
+version: v1.0 (2026-09-20 登记)
+purpose: RAG 检索查询改写——将用户查询改写为 n=3 个不同角度子查询并行召回，解决单一查询召回不全
+service: cucumber-agent
+code_location: cucumber-agent/echomind/mcp/tool_manager.py (rewrite_query, L282-310)
+model: ANTHROPIC_MODEL
+temperature: 0.3
+max_tokens: 1024
+notes: 改写失败回退原始查询；改写+重排链路为 search_with_rewrite（评测报告 RAG 口径为不含改写的裸检索，两者需区分）
+eval_link: docs/评测报告_20260920.md RAG 检索指标（口径说明见该报告）
+changelog:
+  - v1.0: 2026-09-20 初次登记

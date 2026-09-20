@@ -1,0 +1,12 @@
+name: tool-rerank
+version: v1.0 (2026-09-20 登记)
+purpose: RAG 召回结果 LLM 重排——对合并去重后的候选按相关性打分排序取 Top-K，向量相似度不等于对用户有用
+service: cucumber-agent
+code_location: cucumber-agent/echomind/mcp/tool_manager.py (_rerank, L361-390)
+model: ANTHROPIC_MODEL
+temperature: 0.0
+max_tokens: 1024
+notes: 重排失败回退原始顺序 Top-K
+eval_link: docs/评测报告_20260920.md RAG 检索指标
+changelog:
+  - v1.0: 2026-09-20 初次登记

@@ -1,0 +1,12 @@
+name: agent-escalation-system
+version: v1.0 (2026-09-20 登记)
+purpose: 人工升级 Agent system prompt——标准化交接信息，停止普通 Agent 继续编造答案；关联 record_id 时确定性创建复核反馈（不经 LLM）
+service: cucumber-agent
+code_location: cucumber-agent/echomind/agents/agent_orchestrator.py (EscalationAgent, L512-601)
+model: ANTHROPIC_MODEL（升级交接为模板化生成，通常不依赖 LLM 行文）
+temperature: 0.0
+max_tokens: 500
+notes: 升级触发：用户明确要求 / urgency=CRITICAL / Agent 输出含升级关键词（_needs_escalation 关键词检测）
+eval_link: docs/评测报告_20260920.md human_handoff 类用例
+changelog:
+  - v1.0: 2026-09-20 初次登记

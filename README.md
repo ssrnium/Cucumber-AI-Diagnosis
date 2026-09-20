@@ -275,6 +275,81 @@ cucumber-diagnosis-platform/
 - Docker compose 编排与 RabbitMQ 异步诊断链路**尚未在本机验证**（本机无 Docker，当前均为便携件本地直跑）；其余链路均有浏览器级与接口级验证记录（docs/验收报告_20260912.md）。
 - 本项目为持续开发中的秋招作品集项目，不声称商业落地或大规模生产验证；指标数字均标注口径（见模型版本页与 PROJECT_STATUS.md）。
 
+## 多模态融合链路
+
+视觉模型负责感知，LLM 负责知识推理，两者通过结构化 schema 汇合，而非让 LLM 直接看图猜病：
+
+```text
+叶片图像
+   ↓
+改进 YOLO11n（E2_gfix）检测：病斑框 / 类别 / 置信度（cucumber-ai /detect）
+   ↓
+结构化病害表征（disease schema）：rule A 最高置信框定图像级类别，
+   低置信(<0.75)与类别冲突双 flag（report.py build_evidence）
+   ↓
+RAG 知识检索：类别显式映射 28 个合法 source_id（knowledge_store.py，
+   论文口径；对话侧另有 Chroma 向量检索 + 查询改写 + 重排）
+   ↓
+LLM 受控报告生成：只能润色 4 个 editable 字段，
+   7 个 protected 字段程序回填（prompts.py / report.py）
+   ↓
+Schema / 来源校验：12 项事实一致性校验（validators.py），
+   失败纠错重润 1 次，再失败骨架回退
+   ↓
+置信度分流：正常发布 / 低置信或冲突自动转专家复核（UNCERTAIN 复核单）
+```
+
+## RAG 来源追溯示例
+
+请求与响应结构与 `cucumber-ai/app/schemas/` 的 `DiagnoseRequest` / `DiagnosisReport` 一一对应（下例为真实链路的典型形态，`report_status=polished` 表示 LLM 润色通过 12 项校验）：
+
+```jsonc
+// POST /api/v1/diagnose 请求（检测框来自 /detect 的真实输出）
+{
+  "detections": [
+    {"x1": 122.5, "y1": 87.0, "x2": 301.2, "y2": 266.8, "confidence": 0.893, "label": "霜霉病"}
+  ],
+  "symptoms": ["叶背灰黑色霉层", "叶面黄褐色多角形病斑"]
+}
+
+// 响应（五段式 + 来源追溯 + 状态）
+{
+  "disease_type": "黄瓜霜霉病",
+  "confidence": 0.893,                       // 图像检测框置信度，LLM 不可修改（protected）
+  "basis": [
+    "检测模型预测该叶片疑似黄瓜霜霉病（置信度 0.8930）。",
+    "知识库记载的典型症状：叶面初期为水浸状淡绿色小斑点……"
+  ],
+  "agronomy": ["农业防治：选用抗病品种；与非瓜类作物轮作 3 年以上……"],
+  "chemical": ["化学防治：发病初期可选用烯酰吗啉类、氰霜唑等登记药剂……（具体剂量以标签为准）"],
+  "safety": ["安全间隔期与注意事项：采收前按标签规定停止用药……"],
+  "source_ids": ["KB-DM-001", "KB-DM-003", "KB-DM-004"],   // 知识库来源编号，前端可弹窗查原文
+  "uncertainty_note": null,                  // 低置信/类别冲突时强制非空（校验第 6/7 项）
+  "report_status": "polished"                // polished=润色通过校验 / fallback_to_skeleton=骨架回退
+}
+```
+
+对话侧（cucumber-agent）的回答同样强制标注 `[KB-XXX-NNN]` 来源编号，引用规则由 RAG 工具的 `citation_rule` 与 PreventionAgent 的 system prompt 双重约束。
+
+## 评测结果
+
+2026-09-20 全量评测（评测集 `cucumber-agent/echomind/evaluation/eval_cases.json`：108 意图 + 22 对话 + 26 RAG 用例，含跨病害混淆/紧急措辞/禁限用诱导/非黄瓜对抗样本；DeepSeek deepseek-chat，本机真实运行，完整口径与原始输出见 [docs/评测报告_20260920.md](docs/评测报告_20260920.md)）：
+
+| 指标 | 结果 |
+| --- | --- |
+| 意图识别 Accuracy（108 用例） | **98.15%（106/108）**，Macro-F1 0.9845 |
+| 每类 F1 | disease_diagnosis 0.981 / prevention_qa 0.955 / medication_advice 1.000 / human_handoff 1.000 / greeting 1.000 / other 0.971 |
+| Judge 六维均分（29 个评分点，judge_failed=0） | 相关性 0.926 / 准确性 0.953 / 完整性 0.772 / 有用性 0.821 / 诊断准确性 0.941 / 用药安全性 **1.000** |
+| 对话综合通过率（≥0.75 及格线） | 28/30 = 93.33% |
+| RAG Recall@5（裸检索口径，28 条种子库） | 0.2609（6/23），Top-1 source_id 命中率 0.0435 |
+| 回归对比（vs 2026-09-14 基线，退化 >5% 告警） | 无退化项 |
+
+口径说明：RAG 指标为**裸检索**（Chroma 内置英文 embedding，不含查询改写/重排），是检索能力下限而非线上表现，改进方向见评测报告第 5/8 节。**幻觉率 0.22% 为论文第六章既有口径**（受控生成 12 项事实一致性校验，`validators.py` 逐行移植），与上表 agent 评测是两套独立度量，不混淆。原"论文资产集成现状"表中的"评测数据补充"项已于 2026-09-20 完成。
+
+## Prompt 与版本管理
+
+平台所有 LLM prompt 当前硬编码在源码中（cucumber-ai 报告润色 2 个 + cucumber-agent 意图/Judge/四角色/Composer/改写/重排/记忆 10 个），已建立 **`prompts/` 登记册**（只登记、不重构）：每个 prompt 一个 yaml，记录 name / version / 用途 / 模型 / temperature / max_tokens / 代码位置 / 关联评测，变更需升版本并重跑关联评测。详见 [prompts/README.md](prompts/README.md)。
+
 ## 一句话总结
 
 > 基于改进 YOLO、可追溯知识增强和自主 EchoMind 多 Agent Runtime 构建的农业 AI 诊断平台，实现从图像识别、知识检索、可信生成到专家反馈的完整 AI 应用闭环。

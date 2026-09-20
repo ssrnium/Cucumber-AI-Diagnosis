@@ -1,0 +1,12 @@
+name: cucumber-ai-report-polish-rules
+version: v1.0 (2026-09-20 登记)
+purpose: 受控润色任务包构建——6 条 RULES（不重判病害/不改 protected/不加库外信息/不扩写检测框/低置信保留不确定表达/只返回 JSON）+ protected/editable 字段划分 + 纠错重润时携带错误列表
+service: cucumber-ai
+code_location: cucumber-ai/app/services/prompts.py (RULES/PROTECTED/EDITABLE/build_task/task_to_user_content, L15-48)
+model: 同上（随 system prompt 一并发送）
+temperature: 1.0
+max_tokens: 2048
+notes: RULES 与 12 项校验一一对应（validators.py 逐行移植自论文 validate_kimi_polish.py）；纠错重润仅 1 次（report.py attempt<2）
+eval_link: docs/验收报告_20260912.md；幻觉率 0.22% 为论文第六章口径
+changelog:
+  - v1.0: 2026-09-20 初次登记

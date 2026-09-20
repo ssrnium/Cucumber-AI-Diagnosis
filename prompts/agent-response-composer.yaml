@@ -1,0 +1,12 @@
+name: agent-response-composer
+version: v1.0 (2026-09-20 登记)
+purpose: 多 Agent 结果合并——以主 Agent 结论为主、去重去冲突、不补造诊断/剂量/查询结果、保留 source_id 与用药安全提示
+service: cucumber-agent
+code_location: cucumber-agent/echomind/agents/agent_orchestrator.py (ResponseComposer.compose, L612-653)
+model: ANTHROPIC_MODEL
+temperature: 0.1（ECHOMIND_COMPOSER_TEMPERATURE 可调）
+max_tokens: 1600（ECHOMIND_COMPOSER_MAX_TOKENS 可调）
+notes: Composer 失败时降级为确定性拼接（保留主次标签）
+eval_link: docs/评测报告_20260920.md 对话质量（多意图并行用例）
+changelog:
+  - v1.0: 2026-09-20 初次登记

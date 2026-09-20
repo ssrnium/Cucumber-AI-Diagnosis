@@ -1,0 +1,12 @@
+name: agent-prevention-system
+version: v1.0 (2026-09-20 登记)
+purpose: 防治知识 Agent system prompt——回答必须基于知识库检索结果并标注 [source_id]，检索不到明确告知，不凭印象编造
+service: cucumber-agent
+code_location: cucumber-agent/echomind/agents/agent_orchestrator.py (PreventionAgent.system_prompt, L468-472；AgentProfile L457-467)
+model: ANTHROPIC_MODEL（可用 ECHOMIND_PREVENTION_MODEL 覆盖）
+temperature: 0.1
+max_tokens: 1600
+notes: 引用规则同时由 RAG 工具返回的 citation_rule 字段强化（agents/tools.py build_shared_rag_tools）
+eval_link: docs/评测报告_20260920.md 对话质量 + RAG Recall@5
+changelog:
+  - v1.0: 2026-09-20 初次登记

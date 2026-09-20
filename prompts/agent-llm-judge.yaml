@@ -1,0 +1,12 @@
+name: agent-llm-judge
+version: v1.0 (2026-09-20 登记)
+purpose: LLM-as-Judge 对话质量评分——六维（relevance/accuracy/completeness/helpfulness/diagnosis_accuracy/medication_safety）0-1 打分，输出 JSON
+service: cucumber-agent
+code_location: cucumber-agent/echomind/evaluation/evaluator.py (JUDGE_PROMPT, L100-114)
+model: ANTHROPIC_MODEL（评测运行时为 deepseek-chat）
+temperature: 0.0
+max_tokens: 1024
+notes: 未涉及用药时 medication_safety 按 1.0 计（prompt 内置规则）；Judge 失败回退 0.5 并置 judge_failed
+eval_link: docs/评测报告_20260920.md Judge 六维均分
+changelog:
+  - v1.0: 2026-09-20 初次登记
