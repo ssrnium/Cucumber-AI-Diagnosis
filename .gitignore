@@ -34,3 +34,7 @@ cucumber-web/dist/
 # ---- 备份文件 ----
 *.bak.*
 logs/
+
+# ---- Python ----
+__pycache__/
+*.pyc
