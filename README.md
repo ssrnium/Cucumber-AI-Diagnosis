@@ -25,17 +25,17 @@ EchoMind 多 Agent 协作诊断
 - **Agent 编排**：通过 EchoMind 完成意图识别、路由、工具调用、记忆与评测
 - **业务闭环**：连接用户诊断、专家复核、知识管理、模型管理和反馈迭代
 
-![演示 GIF（46 秒全流程：登录 → 看板 → 上传诊断（扫描动画）→ 候选与三栏结果区 → 来源弹窗 → 智能体对话真实问答，2026-09-20 录制）](docs/screenshots/demo-cucumber-20260920.gif)
+![平台演示（46 秒 GIF：登录 → 上传诊断 → 多候选结果 → 来源追溯 → 智能体问答）](docs/screenshots/demo-cucumber-20260920.gif)
 
 ![真实检测与诊断报告](docs/screenshots/real-model-upload.png)
 
-| 来源追溯 | 低置信自动复核 | 农技诊断 Agent |
+| 知识来源追溯 | 低置信自动复核 | 农技诊断 Agent |
 | --- | --- | --- |
-| ![来源追溯](docs/screenshots/real-kb-source.png) | ![低置信复核](docs/screenshots/review-uncertain.png) | ![智能体对话](docs/screenshots/14-agent-chat.png) |
+| ![知识来源追溯](docs/screenshots/real-kb-source.png) | ![低置信复核](docs/screenshots/review-uncertain.png) | ![智能体对话](docs/screenshots/14-agent-chat.png) |
 
-| 候选排序与三栏结果区（09-20 重构，实证） | 空白图降级提示（实证） |
+| 多候选诊断结果展示 | 异常输入降级处理 |
 | --- | --- |
-| ![候选排序与三栏结果区](docs/screenshots/diagnosis-candidates.png) | ![空白图降级](docs/screenshots/diagnosis-blank.png) |
+| ![多候选诊断结果展示](docs/screenshots/diagnosis-candidates.png) | ![异常输入降级处理](docs/screenshots/diagnosis-blank.png) |
 
 ## 项目背景
 
