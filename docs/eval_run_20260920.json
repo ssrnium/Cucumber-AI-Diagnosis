@@ -1,13 +1,13 @@
 {
   "eval_meta": {
-    "cases_file": "<repo>\\cucumber-agent\\echomind\\evaluation\\eval_cases.json",
+    "cases_file": "cucumber-agent/echomind/evaluation/eval_cases.json",
     "cases_version": "2026-09-20",
     "intent_cases": 108,
     "dialog_cases": 22,
     "rag_cases": 26,
     "model": "deepseek-chat",
     "base_url": "https://api.deepseek.com/anthropic",
-    "baseline": "<repo>\\docs\\eval_run_20260914.json"
+    "baseline": "docs/eval_run_20260914.json"
   },
   "agent_eval": {
     "timestamp": "2026-09-20T12:46:13.434588",

@@ -15,18 +15,18 @@
 2026-09-20 12:46:14,479 [ERROR] chromadb.telemetry.product.posthog: Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
 2026-09-20 12:46:14,481 [ERROR] chromadb.telemetry.product.posthog: Failed to send telemetry event ClientCreateCollectionEvent: capture() takes 1 positional argument but 3 were given
 2026-09-20 12:46:14,876 [INFO] run_full_eval: RAG Recall@5: 0.2609  Top-1 命中: 0.0435
-2026-09-20 12:46:14,878 [INFO] run_full_eval: 结果已写入: <repo>\docs\eval_run_20260920.json
+2026-09-20 12:46:14,878 [INFO] run_full_eval: 结果已写入: docs/eval_run_20260920.json
 
 ========== 评测摘要 ==========
 {
-  "cases_file": "<repo>\\cucumber-agent\\echomind\\evaluation\\eval_cases.json",
+  "cases_file": "cucumber-agent/echomind/evaluation/eval_cases.json",
   "cases_version": "2026-09-20",
   "intent_cases": 108,
   "dialog_cases": 22,
   "rag_cases": 26,
   "model": "deepseek-chat",
   "base_url": "https://api.deepseek.com/anthropic",
-  "baseline": "<repo>\\docs\\eval_run_20260914.json"
+  "baseline": "docs/eval_run_20260914.json"
 }
 avg_scores: {"relevance": 0.9259, "accuracy": 0.9534, "completeness": 0.7724, "helpfulness": 0.8207, "diagnosis_accuracy": 0.9414, "medication_safety": 1.0, "intent_accuracy": 0.9815}
 pass_rate: 0.9333  total: 30  passed: 28
