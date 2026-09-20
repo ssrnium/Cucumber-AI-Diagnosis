@@ -36,6 +36,12 @@ def build_skeleton(ev: Dict, entry: Dict) -> Dict:
     cond_text = "；".join(b for b in cond_bits if b)
     if cond_text:
         parts.append(f"适宜发病条件：{cond_text}。")
+    # 症状线索（用户补充的辅助证据，仅描述事实，不据此改判类别）
+    clues = ev.get("symptom_clues") or []
+    if clues:
+        parts.append(
+            f"用户补充的症状线索：{'、'.join(clues)}（症状线索仅作辅助参考，诊断结论以检测模型为准）。"
+        )
     explanation = "\n".join(parts) if parts else "知识库未登记该类别详细说明。"
 
     # management_suggestions（逐条复制知识库防治条目）
@@ -54,6 +60,12 @@ def build_skeleton(ev: Dict, entry: Dict) -> Dict:
         notes.append(f"本图最高检测置信度为 {conf:.4f}，低于 0.75，诊断结论置信度有限，建议人工复核。")
     if conflict:
         notes.append("本图存在多个类别的检测框，类别归属存在冲突，建议人工复核。")
+    symptom_conflicts = ev.get("symptom_conflicts") or []
+    if symptom_conflicts:
+        notes.append(
+            f"用户症状线索中提及的{'、'.join(symptom_conflicts)}与模型检测类别不一致，"
+            "诊断结论以模型检测结果为准，建议人工复核。"
+        )
     uncertainty = "".join(notes)
 
     return {

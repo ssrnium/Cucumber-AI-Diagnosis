@@ -1,8 +1,12 @@
 import request from '../utils/request'
 
-export const uploadDiagnosis = (file: File) => {
+export const uploadDiagnosis = (file: File, symptoms: string[] = []) => {
   const formData = new FormData()
   formData.append('file', file)
+  // 症状描述作为辅助证据透传（每条一个 symptoms 字段，后端按多值表单参数接收）
+  for (const s of symptoms) {
+    formData.append('symptoms', s)
+  }
   return request.post('/api/v1/diagnosis', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
     timeout: 90000

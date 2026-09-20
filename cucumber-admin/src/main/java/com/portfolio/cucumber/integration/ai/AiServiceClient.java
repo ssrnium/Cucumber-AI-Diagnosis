@@ -54,13 +54,23 @@ public class AiServiceClient {
     }
 
     /**
-     * 调用 POST /api/v1/diagnose：传入病斑框证据，返回受控生成的诊断报告 JSON。
+     * 调用 POST /api/v1/diagnose：传入病斑框证据（无症状描述），返回受控生成的诊断报告 JSON。
      */
     public Map<String, Object> diagnose(List<Map<String, Object>> detections) {
+        return diagnose(detections, List.of());
+    }
+
+    /**
+     * 调用 POST /api/v1/diagnose：传入病斑框证据 + 用户补充的症状描述关键词。
+     * 症状仅作辅助证据由 AI 服务清洗后纳入报告"症状线索"，不影响检测结论；
+     * symptoms 传 null 时按空列表处理（兼容不传）。
+     */
+    public Map<String, Object> diagnose(List<Map<String, Object>> detections, List<String> symptoms) {
         return restClient.post()
                 .uri("/api/v1/diagnose")
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Map.of("detections", detections))
+                .body(Map.of("detections", detections,
+                        "symptoms", symptoms == null ? List.<String>of() : symptoms))
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {
                 });

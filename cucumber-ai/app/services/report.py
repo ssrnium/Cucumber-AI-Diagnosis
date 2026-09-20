@@ -27,6 +27,19 @@ LOW_CONF_THRESHOLD = 0.75  # 论文口径（detect_one.py:21）
 
 
 # ── ① 证据构建（rule A：最高置信框定图像级类别）──
+def _symptom_class_conflicts(clues: List[str], suspected_class: str) -> List[str]:
+    """症状线索中显式提及的病害名与模型类别不一致时，返回提及的病害名列表。
+
+    仅匹配知识库已登记的病害别名（如"白粉病"），普通症状词（"黄斑""白粉"）不算类别主张。
+    """
+    conflicts: List[str] = []
+    for clue in clues:
+        for zh_name, cls in ZH_TO_CLASS.items():
+            if zh_name in clue and cls != suspected_class and zh_name not in conflicts:
+                conflicts.append(zh_name)
+    return conflicts
+
+
 def build_evidence(request: DiagnoseRequest) -> Dict:
     detections: List[Detection] = request.detections
     digest = hashlib.sha256(
@@ -37,12 +50,14 @@ def build_evidence(request: DiagnoseRequest) -> Dict:
     if not detections:
         return {
             "image_id": image_id,
-            "suspected_disease_class": "Fresh_Leaf",
-            "prediction_confidence": 0.0,
+            "suspected_disease_class": None,
+            "prediction_confidence": None,
             "detection_count": 0,
             "regions": [],
-            "low_confidence_flag": True,
+            "low_confidence_flag": False,
             "class_conflict_flag": False,
+            "symptom_clues": list(request.symptoms),
+            "symptom_conflicts": [],
         }
 
     regions = [
@@ -65,6 +80,8 @@ def build_evidence(request: DiagnoseRequest) -> Dict:
         "regions": regions,
         "low_confidence_flag": top.confidence < LOW_CONF_THRESHOLD,
         "class_conflict_flag": len({d.label for d in detections}) > 1,
+        "symptom_clues": list(request.symptoms),
+        "symptom_conflicts": _symptom_class_conflicts(request.symptoms, cls_en),
     }
 
 
@@ -98,6 +115,11 @@ def _map_to_report(pol: Dict, entry: Optional[Dict], status: str) -> DiagnosisRe
     if uncertainty.strip():
         safety.append(uncertainty)
 
+    diagnosis_status = (
+        "UNCERTAIN"
+        if pol.get("low_confidence_flag") or pol.get("class_conflict_flag")
+        else "DIAGNOSED"
+    )
     return DiagnosisReport(
         disease_type=name_cn,
         confidence=round(float(pol["prediction_confidence"]), 4),
@@ -108,12 +130,43 @@ def _map_to_report(pol: Dict, entry: Optional[Dict], status: str) -> DiagnosisRe
         source_ids=pol.get("source_ids", []),
         uncertainty_note=uncertainty or None,
         report_status=status,
+        diagnosis_status=diagnosis_status,
+        requires_review=diagnosis_status == "UNCERTAIN",
+    )
+
+
+INCONCLUSIVE_NOTE = "未检出可信病斑，当前结果不足以判断叶片是否健康"
+
+
+def _inconclusive_report(request: DiagnoseRequest) -> DiagnosisReport:
+    """无检测框：信息不足，不映射为"健康叶"（无信息 ≠ 健康），不走 LLM 流水线。"""
+    basis = [INCONCLUSIVE_NOTE]
+    if request.symptoms:
+        basis.append(
+            "用户补充的症状线索：" + "、".join(request.symptoms)
+            + "（症状线索仅作辅助参考，需结合人工复核确认）"
+        )
+    return DiagnosisReport(
+        disease_type=None,
+        confidence=None,
+        basis=basis,
+        agronomy=[],
+        chemical=[],
+        safety=[INCONCLUSIVE_NOTE, "建议补拍更清晰的叶片特写后重新诊断，或提交专家复核。"],
+        source_ids=[],
+        uncertainty_note=INCONCLUSIVE_NOTE,
+        report_status="inconclusive",
+        diagnosis_status="INCONCLUSIVE",
+        requires_review=True,
     )
 
 
 def generate_report(request: DiagnoseRequest) -> DiagnosisReport:
     # ① 证据 → ② 检索 → ③ 骨架
     evidence = build_evidence(request)
+    if not request.detections:
+        logger.info("无检测框（image_id=%s），按 INCONCLUSIVE 语义直接返回", evidence["image_id"])
+        return _inconclusive_report(request)
     entry, _, match_method = K_STORE.lookup(evidence["suspected_disease_class"])
     if entry is None:
         logger.warning("知识库未命中类别 %s（match_method=%s），骨架走空条目分支",

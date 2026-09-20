@@ -74,12 +74,16 @@ public class DiagnosisController {
 
     /**
      * 上传图片并诊断：存文件 -> 调 AI 服务 -> 存记录 -> 返回病斑框 + 诊断报告。
+     * 可选症状描述（symptoms 表单字段，可多值）透传给 AI 服务作辅助证据，
+     * 报告结论始终以检测模型为准。
      * mq.enabled=true 时转为异步：记录置 PENDING 并投递消息，前端轮询详情获取结果。
      */
     @PostMapping(value = "/diagnosis", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @OperLog("上传图片诊断")
     @SuppressWarnings("unchecked")
-    public Result<DiagnosisRecord> diagnose(@RequestParam("file") MultipartFile file) throws IOException {
+    public Result<DiagnosisRecord> diagnose(@RequestParam("file") MultipartFile file,
+                                            @RequestParam(value = "symptoms", required = false)
+                                            List<String> symptoms) throws IOException {
         if (file.isEmpty()) {
             throw new BizException("请上传叶片图片");
         }
@@ -137,7 +141,8 @@ public class DiagnosisController {
             Map<String, Object> detectResponse = aiServiceClient.detect(bytes, original);
             List<Map<String, Object>> detections =
                     (List<Map<String, Object>>) detectResponse.get("detections");
-            Map<String, Object> report = aiServiceClient.diagnose(detections);
+            Map<String, Object> report = aiServiceClient.diagnose(
+                    detections, symptoms == null ? List.of() : symptoms);
             record.setDetections(detections);
             record.setReport(report);
             Object inferenceMs = detectResponse.get("inference_ms");

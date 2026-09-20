@@ -34,6 +34,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -99,7 +100,7 @@ class DiagnosisControllerTest {
         existing.setStatus("DONE");
         when(recordMapper.selectOne(any(LambdaQueryWrapper.class))).thenReturn(existing);
 
-        Result<DiagnosisRecord> result = controller.diagnose(leafImage());
+        Result<DiagnosisRecord> result = controller.diagnose(leafImage(), null);
 
         assertThat(result.getCode()).isEqualTo(200);
         assertThat(result.getData().getId()).isEqualTo(99L);
@@ -118,9 +119,9 @@ class DiagnosisControllerTest {
         Map<String, Object> detection = Map.of("label", "霜霉病", "confidence", 0.92);
         when(aiServiceClient.detect(any(), anyString()))
                 .thenReturn(Map.of("detections", List.of(detection), "inference_ms", 35));
-        when(aiServiceClient.diagnose(anyList())).thenReturn(Map.of("summary", "建议防治"));
+        when(aiServiceClient.diagnose(anyList(), any())).thenReturn(Map.of("summary", "建议防治"));
 
-        Result<DiagnosisRecord> result = controller.diagnose(leafImage());
+        Result<DiagnosisRecord> result = controller.diagnose(leafImage(), null);
 
         assertThat(result.getCode()).isEqualTo(200);
         ArgumentCaptor<DiagnosisRecord> captor = ArgumentCaptor.forClass(DiagnosisRecord.class);
@@ -143,7 +144,7 @@ class DiagnosisControllerTest {
         TestSupport.loginAs(7L);
         MockMultipartFile txt = new MockMultipartFile("file", "note.txt", "text/plain", "hello".getBytes());
 
-        assertThatThrownBy(() -> controller.diagnose(txt))
+        assertThatThrownBy(() -> controller.diagnose(txt, null))
                 .isInstanceOf(BizException.class)
                 .hasMessageContaining("仅支持上传图片文件");
     }
@@ -158,7 +159,7 @@ class DiagnosisControllerTest {
         stubFreshUpload();
         when(aiServiceClient.detect(any(), anyString())).thenThrow(new RuntimeException("connection refused"));
 
-        Result<DiagnosisRecord> result = controller.diagnose(leafImage());
+        Result<DiagnosisRecord> result = controller.diagnose(leafImage(), null);
 
         assertThat(result.getCode()).isEqualTo(500);
         assertThat(result.getMessage()).contains("AI 服务暂不可用");
@@ -176,9 +177,9 @@ class DiagnosisControllerTest {
         stubFreshUpload();
         Map<String, Object> weak = Map.of("label", "靶斑病", "confidence", 0.52);
         when(aiServiceClient.detect(any(), anyString())).thenReturn(Map.of("detections", List.of(weak)));
-        when(aiServiceClient.diagnose(anyList())).thenReturn(Map.of());
+        when(aiServiceClient.diagnose(anyList(), any())).thenReturn(Map.of());
 
-        Result<DiagnosisRecord> result = controller.diagnose(leafImage());
+        Result<DiagnosisRecord> result = controller.diagnose(leafImage(), null);
 
         assertThat(result.getCode()).isEqualTo(200);
         ArgumentCaptor<DiagnosisFeedback> captor = ArgumentCaptor.forClass(DiagnosisFeedback.class);
@@ -198,14 +199,49 @@ class DiagnosisControllerTest {
         stubFreshUpload();
         when(aiServiceClient.detect(any(), anyString()))
                 .thenReturn(Map.of("detections", List.of()));
-        when(aiServiceClient.diagnose(anyList())).thenReturn(Map.of());
+        when(aiServiceClient.diagnose(anyList(), any())).thenReturn(Map.of());
 
-        controller.diagnose(leafImage());
+        controller.diagnose(leafImage(), null);
 
         ArgumentCaptor<DiagnosisFeedback> captor = ArgumentCaptor.forClass(DiagnosisFeedback.class);
         verify(feedbackMapper).insert(captor.capture());
         assertThat(captor.getValue().getVerdict()).isEqualTo("UNCERTAIN");
         assertThat(captor.getValue().getReviewStatus()).isEqualTo("PENDING");
+    }
+
+    // ---------- 8. 症状描述透传（辅助证据，结论仍以检测为准） ----------
+
+    @Test
+    void diagnose_whenSymptomsProvided_forwardsThemToAiService() throws Exception {
+        // 业务含义：前端补充的症状描述随诊断请求透传给 AI 服务（报告"症状线索"），
+        // admin 不做内容改写，只负责转发。
+        TestSupport.loginAs(7L);
+        stubFreshUpload();
+        Map<String, Object> detection = Map.of("label", "霜霉病", "confidence", 0.92);
+        when(aiServiceClient.detect(any(), anyString()))
+                .thenReturn(Map.of("detections", List.of(detection)));
+        when(aiServiceClient.diagnose(anyList(), any())).thenReturn(Map.of());
+
+        Result<DiagnosisRecord> result = controller.diagnose(leafImage(), List.of("黄斑", "叶背霉层"));
+
+        assertThat(result.getCode()).isEqualTo(200);
+        verify(aiServiceClient).diagnose(anyList(), eq(List.of("黄斑", "叶背霉层")));
+    }
+
+    @Test
+    void diagnose_whenNoSymptoms_forwardsEmptyList() throws Exception {
+        // 业务含义：不传症状（兼容旧调用）时按空列表透传，AI 服务走无临床症状的既有口径。
+        TestSupport.loginAs(7L);
+        stubFreshUpload();
+        Map<String, Object> detection = Map.of("label", "霜霉病", "confidence", 0.92);
+        when(aiServiceClient.detect(any(), anyString()))
+                .thenReturn(Map.of("detections", List.of(detection)));
+        when(aiServiceClient.diagnose(anyList(), any())).thenReturn(Map.of());
+
+        Result<DiagnosisRecord> result = controller.diagnose(leafImage(), null);
+
+        assertThat(result.getCode()).isEqualTo(200);
+        verify(aiServiceClient).diagnose(anyList(), eq(List.of()));
     }
 
     // ---------- 5 / 10. 用户反馈提交（verdict 语义不被覆盖） ----------

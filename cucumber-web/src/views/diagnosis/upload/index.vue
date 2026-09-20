@@ -70,8 +70,11 @@
             <el-card shadow="never" class="report-card">
               <template #header>
                 诊断结论：
-                <el-tag type="danger" size="large">{{ report.disease_type }}</el-tag>
-                <span class="confidence">置信度 {{ (report.confidence * 100).toFixed(1) }}%</span>
+                <el-tag v-if="inconclusive" type="info" size="large">信息不足，无法判定</el-tag>
+                <template v-else>
+                  <el-tag type="danger" size="large">{{ report.disease_type }}</el-tag>
+                  <span class="confidence">置信度 {{ (report.confidence * 100).toFixed(1) }}%</span>
+                </template>
               </template>
 
               <!-- 候选排序列表：按病害类别聚合 detections（同类取最高置信度），点击切换查看各候选依据 -->
@@ -92,6 +95,8 @@
                   <el-button size="small" @click="openCompare">对比候选</el-button>
                 </div>
               </div>
+              <el-alert v-else-if="inconclusive" type="warning" :closable="false" class="block-gap"
+                        title="未检出可信病斑，当前结果不足以判断叶片是否健康；本记录已自动转入专家复核" />
               <el-alert v-else type="info" :closable="false" class="block-gap"
                         title="未检出明显病斑，以下为图像级诊断结论" />
 
@@ -133,7 +138,7 @@
                   <ul><li v-for="(item, i) in report.basis" :key="'b' + i">{{ item }}</li></ul>
                   <p class="evidence-text">
                     结论类别按规则取全图最高置信度病斑框所属类别；置信度为该框的检测置信度，非患病概率。
-                    报告生成方式：{{ report.report_status === 'polished' ? 'LLM 受控润色并通过校验' : '确定性骨架回退（LLM 未通过校验或不可用）' }}。
+                    报告生成方式：{{ report.report_status === 'polished' ? 'LLM 受控润色并通过校验' : report.report_status === 'inconclusive' ? '无检测框，按信息不足口径直接返回（不调用 LLM）' : '确定性骨架回退（LLM 未通过校验或不可用）' }}。
                   </p>
                   <h4>还需排查什么</h4>
                   <p class="evidence-text">
@@ -241,12 +246,16 @@ const scale = ref(1)
 
 const report = computed(() => record.value?.report)
 
-// 症状输入（前端辅助信息，随导出报告与图文依据展示）
+// 症状输入（前端辅助信息，随诊断请求发送给后端，并随导出报告与图文依据展示）
 const symptomText = ref('')
 const diagnosedSymptom = ref('')
 const dirty = computed(() =>
   !!record.value && symptomText.value.trim() !== diagnosedSymptom.value
 )
+
+// 把自由文本症状拆成条目列表（按中英文逗号/顿号/分号/换行分隔），与 chips 拼接格式一致
+const symptomList = (text: string): string[] =>
+  text.split(/[，,、；;\n]/).map(s => s.trim()).filter(Boolean)
 
 const appendSymptom = (chip: string) => {
   if (symptomText.value.includes(chip)) return
@@ -277,6 +286,10 @@ const selectedCandidate = computed(() =>
   candidates.value.find(c => c.label === selectedLabel.value) || null
 )
 const activeTab = ref('evidence')
+
+// 无检出语义：diagnosis_status=INCONCLUSIVE 时报告不给病害结论（disease_type/confidence 为 null，
+// 无信息 ≠ 健康）；旧记录无该字段时按原展示口径回退
+const inconclusive = computed(() => report.value?.diagnosis_status === 'INCONCLUSIVE')
 
 // 不确定性判定：首位置信度过低或与次位分差过小（单候选/无候选时不做分差判断）
 const uncertain = computed(() => {
@@ -357,7 +370,7 @@ const onDiagnose = async () => {
   stageTimers.push(window.setTimeout(() => { if (myRun === runId.value) scanPhase.value = 1 }, 1200))
   stageTimers.push(window.setTimeout(() => { if (myRun === runId.value) scanPhase.value = 2 }, 3000))
   try {
-    const res: any = await uploadDiagnosis(rawFile.value)
+    const res: any = await uploadDiagnosis(rawFile.value, symptomList(symptomText.value))
     if (myRun !== runId.value) return // 已取消或已换图，丢弃迟到结果
     record.value = res.data
     diagnosedSymptom.value = symptomText.value.trim()
@@ -479,7 +492,9 @@ const exportReport = () => {
       ? candidates.value.map((c, i) => `${i + 1}. ${c.label}（最高置信度 ${(c.confidence * 100).toFixed(1)}%，${c.count} 处病斑）`)
       : ['未检出明显病斑']),
     '',
-    `【诊断结论】${r.disease_type}（置信度 ${(r.confidence * 100).toFixed(1)}%）`,
+    `【诊断结论】${r.disease_type == null
+      ? '信息不足，无法判定（未检出可信病斑）'
+      : `${r.disease_type}（置信度 ${(r.confidence * 100).toFixed(1)}%）`}`,
     '',
     '【诊断依据】',
     ...(r.basis || []).map((s: string) => `- ${s}`),
