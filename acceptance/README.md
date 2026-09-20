@@ -19,6 +19,6 @@
 
 ## 注意
 
-- 脚本中的 psql 路径（`<user-home>\pgsql16`）为本机便携 PostgreSQL 路径，其他机器请改用 PATH 中的 psql 或修改脚本顶部常量；
+- 脚本默认调用 PATH 中的 `psql`；使用便携 PostgreSQL 时通过环境变量覆盖（`PSQL` / `PGCTL` / `PGDATA` 等，见各脚本顶部常量）；
 - 截图输出到脚本上两级目录的 `logs/shots/`（本机留存，不入库）；实证截图已精选入 `docs/screenshots/`；
 - `d2_exceptions.py` 会停启本地服务，勿在演示期间运行。

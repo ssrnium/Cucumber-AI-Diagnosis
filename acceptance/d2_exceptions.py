@@ -16,11 +16,12 @@ LOGS = pathlib.Path(__file__).parent.parent / "logs"
 SHOTS = LOGS / "shots"
 SHOTS.mkdir(parents=True, exist_ok=True)
 IMG = PROJ / "test-assets" / "leaf-anthracnose-01.jpg"
-PSQL = r"<user-home>\pgsql16\bin\psql.exe"
-PG_ISREADY = r"<user-home>\pgsql16\bin\pg_isready.exe"
-PGCTL = r"<user-home>\pgsql16\bin\pg_ctl.exe"
-PGDATA = r"<user-home>\pgdata"
-PG_EXE = r"<user-home>\pgsql16\bin\postgres.exe"
+# 便携 PostgreSQL 路径通过环境变量覆盖（如 PSQL/PGCTL/PGDATA），默认走 PATH
+PSQL = os.environ.get("PSQL", "psql")
+PG_ISREADY = os.environ.get("PG_ISREADY", "pg_isready")
+PGCTL = os.environ.get("PGCTL", "pg_ctl")
+PGDATA = os.environ.get("PGDATA", "")
+PG_EXE = os.environ.get("PG_EXE", "postgres")
 IMG_BYTES = open(IMG, "rb").read()
 
 # 直连本地，不信任系统代理环境变量
@@ -155,7 +156,7 @@ except Exception as e:
     check("E1 DB 宕机→友好错误格式（非堆栈）", False, f"请求异常 {str(e)[:60]}")
 # pg_ctl 会降权启动 postmaster（postgres.exe 直接跑会拒绝管理员权限）；
 # 用 cmd start /b 让 pg_ctl 脱离本进程树，避免脚本退出时 PG 被回收
-os.system(f'cmd /c start /b "" "{PGCTL}" -D "{PGDATA}" -l "<user-home>\\pgdata\\server.log" -W start')
+os.system(f'cmd /c start /b "" "{PGCTL}" -D "{PGDATA}" -l "{PGDATA}/server.log" -W start')
 time.sleep(2)
 pg_ok = False
 for _ in range(40):

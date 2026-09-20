@@ -3,7 +3,7 @@
 运行：tools/pw-venv/Scripts/python.exe tools/acceptance/d1_main.py
 前置：admin(8080)/ai(8000)/agent(8002)/web(5173)/PG/Redis 全部在跑。
 """
-import json, subprocess, sys, time, pathlib
+import json, os, subprocess, sys, time, pathlib
 from playwright.sync_api import sync_playwright
 
 BASE = "http://localhost:5173"
@@ -24,8 +24,10 @@ def shot(page, name):
     except Exception:
         pass
 
+PSQL = os.environ.get("PSQL", "psql")  # 便携 PostgreSQL 可用环境变量指定全路径
+
 def psql(sql):
-    r = subprocess.run([r"<user-home>\pgsql16\bin\psql.exe", "-U", "postgres", "-h", "127.0.0.1",
+    r = subprocess.run([PSQL, "-U", "postgres", "-h", "127.0.0.1",
                         "-d", "cucumber_db", "-tAc", sql], capture_output=True, text=True, timeout=30)
     return r.stdout.strip()
 
