@@ -1,0 +1,91 @@
+2026-09-20 12:41:47,340 [INFO] run_full_eval: === 意图识别 + 对话质量评测开始 ===
+2026-09-20 12:41:49,471 [ERROR] chromadb.telemetry.product.posthog: Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
+2026-09-20 12:41:49,473 [ERROR] chromadb.telemetry.product.posthog: Failed to send telemetry event ClientCreateCollectionEvent: capture() takes 1 positional argument but 3 were given
+2026-09-20 12:41:49,481 [INFO] run_full_eval: 知识库片段数: 28
+2026-09-20 12:43:22,288 [ERROR] chromadb.telemetry.product.posthog: Failed to send telemetry event CollectionQueryEvent: capture() takes 1 positional argument but 3 were given
+2026-09-20 12:43:40,343 [WARNING] agents.agent_orchestrator: 请求 955b0859 触发升级: urgency=UrgencyLevel.LOW
+2026-09-20 12:43:50,225 [WARNING] agents.agent_orchestrator: 请求 54c2fb08 触发升级: urgency=UrgencyLevel.LOW
+2026-09-20 12:44:33,635 [WARNING] agents.agent_orchestrator: 请求 98f5d51b 触发升级: urgency=UrgencyLevel.CRITICAL
+2026-09-20 12:44:34,594 [WARNING] agents.agent_orchestrator: 请求 08ccee41 触发升级: urgency=UrgencyLevel.CRITICAL
+2026-09-20 12:44:35,264 [WARNING] agents.agent_orchestrator: 请求 ce1fe394 触发升级: urgency=UrgencyLevel.HIGH
+2026-09-20 12:45:42,705 [WARNING] agents.agent_orchestrator: 请求 8ade4cb6 触发升级: urgency=UrgencyLevel.HIGH
+2026-09-20 12:46:13,437 [INFO] run_full_eval: 意图识别: 准确率 98.2%，Macro-F1 0.985
+2026-09-20 12:46:13,438 [INFO] run_full_eval: 对话质量 avg_scores: {'relevance': 0.9259, 'accuracy': 0.9534, 'completeness': 0.7724, 'helpfulness': 0.8207, 'diagnosis_accuracy': 0.9414, 'medication_safety': 1.0, 'intent_accuracy': 0.9815}
+2026-09-20 12:46:13,438 [INFO] run_full_eval: === RAG Recall@5 离线评测开始 ===
+2026-09-20 12:46:14,479 [ERROR] chromadb.telemetry.product.posthog: Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
+2026-09-20 12:46:14,481 [ERROR] chromadb.telemetry.product.posthog: Failed to send telemetry event ClientCreateCollectionEvent: capture() takes 1 positional argument but 3 were given
+2026-09-20 12:46:14,876 [INFO] run_full_eval: RAG Recall@5: 0.2609  Top-1 命中: 0.0435
+2026-09-20 12:46:14,878 [INFO] run_full_eval: 结果已写入: <repo>\docs\eval_run_20260920.json
+
+========== 评测摘要 ==========
+{
+  "cases_file": "<repo>\\cucumber-agent\\echomind\\evaluation\\eval_cases.json",
+  "cases_version": "2026-09-20",
+  "intent_cases": 108,
+  "dialog_cases": 22,
+  "rag_cases": 26,
+  "model": "deepseek-chat",
+  "base_url": "https://api.deepseek.com/anthropic",
+  "baseline": "<repo>\\docs\\eval_run_20260914.json"
+}
+avg_scores: {"relevance": 0.9259, "accuracy": 0.9534, "completeness": 0.7724, "helpfulness": 0.8207, "diagnosis_accuracy": 0.9414, "medication_safety": 1.0, "intent_accuracy": 0.9815}
+pass_rate: 0.9333  total: 30  passed: 28
+intent: 准确率 98.2%，Macro-F1 0.985
+regressions_vs_20260914: []
+recommendations: ["所有指标均达标，继续保持"]
+RAG: doc_count=28 answerable=23 Recall@5=0.2609 top1_acc=0.0435
+Exception ignored in: <function _ProactorBasePipeTransport.__del__ at 0x0000025674BDA1F0>
+Traceback (most recent call last):
+  File "D:\Anaconda\lib\asyncio\proactor_events.py", line 116, in __del__
+    self.close()
+  File "D:\Anaconda\lib\asyncio\proactor_events.py", line 108, in close
+    self._loop.call_soon(self._call_connection_lost, None)
+  File "D:\Anaconda\lib\asyncio\base_events.py", line 751, in call_soon
+    self._check_closed()
+  File "D:\Anaconda\lib\asyncio\base_events.py", line 515, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+Exception ignored in: <function _ProactorBasePipeTransport.__del__ at 0x0000025674BDA1F0>
+Traceback (most recent call last):
+  File "D:\Anaconda\lib\asyncio\proactor_events.py", line 116, in __del__
+    self.close()
+  File "D:\Anaconda\lib\asyncio\proactor_events.py", line 108, in close
+    self._loop.call_soon(self._call_connection_lost, None)
+  File "D:\Anaconda\lib\asyncio\base_events.py", line 751, in call_soon
+    self._check_closed()
+  File "D:\Anaconda\lib\asyncio\base_events.py", line 515, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+Exception ignored in: <function _ProactorBasePipeTransport.__del__ at 0x0000025674BDA1F0>
+Traceback (most recent call last):
+  File "D:\Anaconda\lib\asyncio\proactor_events.py", line 116, in __del__
+    self.close()
+  File "D:\Anaconda\lib\asyncio\proactor_events.py", line 108, in close
+    self._loop.call_soon(self._call_connection_lost, None)
+  File "D:\Anaconda\lib\asyncio\base_events.py", line 751, in call_soon
+    self._check_closed()
+  File "D:\Anaconda\lib\asyncio\base_events.py", line 515, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+Exception ignored in: <function _ProactorBasePipeTransport.__del__ at 0x0000025674BDA1F0>
+Traceback (most recent call last):
+  File "D:\Anaconda\lib\asyncio\proactor_events.py", line 116, in __del__
+    self.close()
+  File "D:\Anaconda\lib\asyncio\proactor_events.py", line 108, in close
+    self._loop.call_soon(self._call_connection_lost, None)
+  File "D:\Anaconda\lib\asyncio\base_events.py", line 751, in call_soon
+    self._check_closed()
+  File "D:\Anaconda\lib\asyncio\base_events.py", line 515, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+Exception ignored in: <function _ProactorBasePipeTransport.__del__ at 0x0000025674BDA1F0>
+Traceback (most recent call last):
+  File "D:\Anaconda\lib\asyncio\proactor_events.py", line 116, in __del__
+    self.close()
+  File "D:\Anaconda\lib\asyncio\proactor_events.py", line 108, in close
+    self._loop.call_soon(self._call_connection_lost, None)
+  File "D:\Anaconda\lib\asyncio\base_events.py", line 751, in call_soon
+    self._check_closed()
+  File "D:\Anaconda\lib\asyncio\base_events.py", line 515, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
