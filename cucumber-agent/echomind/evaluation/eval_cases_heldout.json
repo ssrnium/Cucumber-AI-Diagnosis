@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "name": "cucumber-agent RAG 检索 held-out 用例集（同义改写）",
+    "version": "2026-09-20",
+    "split": "held_out",
+    "description": "23 条同义改写用例，逐条改写自 eval_cases.json 的 23 条 RAG 可答用例（问题表述换说法/口语化/加入别名，期望 source_id 原样继承）。用途：防过拟合验证——只在最终版检索配置上跑一次，单独报告，不参与任何调参与别名表设计决策。"
+  },
+  "rag_cases": [
+    {"query": "黄瓜霜霉病在叶片上具体长什么样", "tag": "held_out", "expected_source_ids": ["KB-DM-001"], "paraphrase_of": "黄瓜霜霉病的典型症状有哪些"},
+    {"query": "霜霉病叶背长出的霉层是什么颜色、什么形态", "tag": "held_out", "expected_source_ids": ["KB-DM-001"], "paraphrase_of": "霜霉病叶片背面霉层特征"},
+    {"query": "什么样的温湿度环境最容易让黄瓜暴发霜霉病", "tag": "held_out", "expected_source_ids": ["KB-DM-002"], "paraphrase_of": "霜霉病的发病温湿度条件"},
+    {"query": "大棚里通过通风、浇水这些管理手段怎么预防霜霉病", "tag": "held_out", "expected_source_ids": ["KB-DM-003"], "paraphrase_of": "霜霉病怎么通过栽培措施预防"},
+    {"query": "治黄瓜霜霉病可以选用哪些杀菌剂", "tag": "held_out", "expected_source_ids": ["KB-DM-004"], "paraphrase_of": "霜霉病化学防治药剂选择"},
+    {"query": "霜霉病打药的时候要留意什么，怎么避免产生抗药性", "tag": "held_out", "expected_source_ids": ["KB-DM-005", "KB-SAFE-003"], "paraphrase_of": "霜霉病用药注意事项与抗性管理"},
+    {"query": "黄瓜叶子上出现白色粉末状的东西是什么毛病", "tag": "held_out", "expected_source_ids": ["KB-PM-001"], "paraphrase_of": "黄瓜白粉病症状识别"},
+    {"query": "白粉病一般在什么样的环境下容易发生", "tag": "held_out", "expected_source_ids": ["KB-PM-002"], "paraphrase_of": "白粉病发病条件"},
+    {"query": "不打农药的话怎么防控黄瓜白粉病", "tag": "held_out", "expected_source_ids": ["KB-PM-003"], "paraphrase_of": "白粉病农业防治"},
+    {"query": "白粉病可以用哪些药剂来治", "tag": "held_out", "expected_source_ids": ["KB-PM-004"], "paraphrase_of": "白粉病化学防治方案"},
+    {"query": "白粉病喷药时有哪些需要特别注意的地方", "tag": "held_out", "expected_source_ids": ["KB-PM-005"], "paraphrase_of": "白粉病用药注意事项"},
+    {"query": "黄瓜炭疽病的病斑在叶片和果实上是什么表现", "tag": "held_out", "expected_source_ids": ["KB-ANT-001"], "paraphrase_of": "黄瓜炭疽病症状"},
+    {"query": "高温高湿的天气是不是容易诱发炭疽病", "tag": "held_out", "expected_source_ids": ["KB-ANT-002"], "paraphrase_of": "炭疽病发病条件"},
+    {"query": "黄瓜得了炭疽病应该怎么综合防治", "tag": "held_out", "expected_source_ids": ["KB-ANT-003", "KB-ANT-004"], "paraphrase_of": "炭疽病防治方法"},
+    {"query": "炭疽病用药方面有哪些讲究", "tag": "held_out", "expected_source_ids": ["KB-ANT-005"], "paraphrase_of": "炭疽病用药注意"},
+    {"query": "黄瓜茎蔓开裂、流胶是怎么回事", "tag": "held_out", "expected_source_ids": ["KB-GST-001"], "paraphrase_of": "黄瓜蔓枯病症状识别"},
+    {"query": "蔓枯病通常在什么条件下会大面积流行", "tag": "held_out", "expected_source_ids": ["KB-GST-002"], "paraphrase_of": "蔓枯病发病条件"},
+    {"query": "蔓枯病有哪些药剂可以打", "tag": "held_out", "expected_source_ids": ["KB-GST-004"], "paraphrase_of": "蔓枯病化学防治"},
+    {"query": "如何用农业和生物手段来防治蔓枯病", "tag": "held_out", "expected_source_ids": ["KB-GST-003"], "paraphrase_of": "蔓枯病农业与生物防治"},
+    {"query": "正常健康的黄瓜叶子应该是什么状态", "tag": "held_out", "expected_source_ids": ["KB-HL-001"], "paraphrase_of": "健康黄瓜叶片的特征"},
+    {"query": "黄瓜喷过药之后要隔多少天才能摘来吃", "tag": "held_out", "expected_source_ids": ["KB-SAFE-001"], "paraphrase_of": "农药安全间隔期通用规范"},
+    {"query": "种黄瓜有哪些农药是明令禁止或限制使用的", "tag": "held_out", "expected_source_ids": ["KB-SAFE-002"], "paraphrase_of": "黄瓜禁限用农药有哪些"},
+    {"query": "杀菌剂为什么要轮换着使用", "tag": "held_out", "expected_source_ids": ["KB-SAFE-003"], "paraphrase_of": "杀菌剂轮换使用原则"}
+  ]
+}

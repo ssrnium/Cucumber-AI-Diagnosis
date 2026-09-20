@@ -18,6 +18,8 @@ cucumber-agent/**/__pycache__/
 cucumber-agent/**/.pytest_cache/
 cucumber-agent/data/chroma/
 cucumber-agent/echomind/data/chroma/
+cucumber-agent/echomind/data/chroma_eval/
+cucumber-agent/echomind/data/models/
 cucumber-agent/echomind/data/eval/
 cucumber-agent/echomind/logs/
 cucumber-agent/server.log

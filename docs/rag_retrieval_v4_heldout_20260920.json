@@ -1,0 +1,457 @@
+{
+  "eval_meta": {
+    "version": "v4",
+    "version_desc": "v3 + 关键词混合检索（确定性重排）",
+    "config": {
+      "embedding_model": "bge-small-zh-v1.5",
+      "alias_norm": true,
+      "hybrid": true,
+      "desc": "v3 + 关键词混合检索（确定性重排）"
+    },
+    "git_commit": "17ae521b3791f3f9ff18f537f79707923fa34bad",
+    "embedding_model": "BAAI/bge-small-zh-v1.5 (cpu, local cache)",
+    "cases_file": "D:\\研究生\\企业级项目的构建\\cucumber-diagnosis-platform\\cucumber-agent\\echomind\\evaluation\\eval_cases_heldout.json",
+    "cases_version": "2026-09-20",
+    "cases_split": "held_out",
+    "rag_cases_total": 23,
+    "answerable_denominator": 23,
+    "adversarial_excluded": 0,
+    "date": "2026-09-20"
+  },
+  "metrics": {
+    "answerable_total": 23,
+    "recall_at_1": 0.7826,
+    "recall_at_3": 0.913,
+    "recall_at_5": 0.9565,
+    "mrr": 0.8565,
+    "top1_source_accuracy": 0.7826,
+    "avg_query_latency_ms": 8.7,
+    "cold_start_s": 2.06,
+    "model_size_mb": 91.9,
+    "memory_rss_delta_mb": 175.7,
+    "safety_subset": {
+      "n": 6,
+      "recall_at_5": 0.8333,
+      "top1_source_accuracy": 0.5
+    },
+    "adversarial_top1_score_avg": null
+  },
+  "details": [
+    {
+      "query": "黄瓜霜霉病在叶片上具体长什么样",
+      "tag": "held_out",
+      "expected_source_ids": [
+        "KB-DM-001"
+      ],
+      "top_k_source_ids": [
+        "KB-DM-001",
+        "KB-DM-003",
+        "KB-DM-004",
+        "KB-DM-002",
+        "KB-ANT-001"
+      ],
+      "top1_score": 1.0658,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "霜霉病叶背长出的霉层是什么颜色、什么形态",
+      "tag": "held_out",
+      "expected_source_ids": [
+        "KB-DM-001"
+      ],
+      "top_k_source_ids": [
+        "KB-DM-001",
+        "KB-DM-002",
+        "KB-DM-004",
+        "KB-DM-003",
+        "KB-HL-001"
+      ],
+      "top1_score": 0.9857,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "什么样的温湿度环境最容易让黄瓜暴发霜霉病",
+      "tag": "held_out",
+      "expected_source_ids": [
+        "KB-DM-002"
+      ],
+      "top_k_source_ids": [
+        "KB-DM-002",
+        "KB-DM-001",
+        "KB-PM-002",
+        "KB-DM-003",
+        "KB-GST-002"
+      ],
+      "top1_score": 1.0129,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "大棚里通过通风、浇水这些管理手段怎么预防霜霉病",
+      "tag": "held_out",
+      "expected_source_ids": [
+        "KB-DM-003"
+      ],
+      "top_k_source_ids": [
+        "KB-DM-003",
+        "KB-DM-002",
+        "KB-DM-001",
+        "KB-DM-004",
+        "KB-ANT-003"
+      ],
+      "top1_score": 0.9192,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "治黄瓜霜霉病可以选用哪些杀菌剂",
+      "tag": "held_out",
+      "expected_source_ids": [
+        "KB-DM-004"
+      ],
+      "top_k_source_ids": [
+        "KB-DM-004",
+        "KB-DM-003",
+        "KB-DM-001",
+        "KB-PM-004",
+        "KB-ANT-004"
+      ],
+      "top1_score": 0.9654,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "霜霉病打药的时候要留意什么，怎么避免产生抗药性",
+      "tag": "held_out",
+      "expected_source_ids": [
+        "KB-DM-005",
+        "KB-SAFE-003"
+      ],
+      "top_k_source_ids": [
+        "KB-DM-004",
+        "KB-DM-005",
+        "KB-DM-003",
+        "KB-GST-004",
+        "KB-PM-004"
+      ],
+      "top1_score": 1.0523,
+      "first_relevant_rank": 2,
+      "top1_hit": false,
+      "safety_related": true
+    },
+    {
+      "query": "黄瓜叶子上出现白色粉末状的东西是什么毛病",
+      "tag": "held_out",
+      "expected_source_ids": [
+        "KB-PM-001"
+      ],
+      "top_k_source_ids": [
+        "KB-DM-001",
+        "KB-PM-001",
+        "KB-ANT-001",
+        "KB-GST-001",
+        "KB-HL-001"
+      ],
+      "top1_score": 0.7645,
+      "first_relevant_rank": 2,
+      "top1_hit": false,
+      "safety_related": false
+    },
+    {
+      "query": "白粉病一般在什么样的环境下容易发生",
+      "tag": "held_out",
+      "expected_source_ids": [
+        "KB-PM-002"
+      ],
+      "top_k_source_ids": [
+        "KB-PM-001",
+        "KB-PM-005",
+        "KB-PM-003",
+        "KB-PM-004",
+        "KB-PM-002"
+      ],
+      "top1_score": 1.0398,
+      "first_relevant_rank": 5,
+      "top1_hit": false,
+      "safety_related": false
+    },
+    {
+      "query": "不打农药的话怎么防控黄瓜白粉病",
+      "tag": "held_out",
+      "expected_source_ids": [
+        "KB-PM-003"
+      ],
+      "top_k_source_ids": [
+        "KB-PM-003",
+        "KB-PM-005",
+        "KB-PM-004",
+        "KB-PM-001",
+        "KB-GST-003"
+      ],
+      "top1_score": 0.9568,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "白粉病可以用哪些药剂来治",
+      "tag": "held_out",
+      "expected_source_ids": [
+        "KB-PM-004"
+      ],
+      "top_k_source_ids": [
+        "KB-PM-004",
+        "KB-PM-005",
+        "KB-PM-003",
+        "KB-PM-001",
+        "KB-ANT-004"
+      ],
+      "top1_score": 0.9468,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "白粉病喷药时有哪些需要特别注意的地方",
+      "tag": "held_out",
+      "expected_source_ids": [
+        "KB-PM-005"
+      ],
+      "top_k_source_ids": [
+        "KB-PM-004",
+        "KB-PM-005",
+        "KB-PM-003",
+        "KB-PM-001",
+        "KB-ANT-004"
+      ],
+      "top1_score": 1.0303,
+      "first_relevant_rank": 2,
+      "top1_hit": false,
+      "safety_related": true
+    },
+    {
+      "query": "黄瓜炭疽病的病斑在叶片和果实上是什么表现",
+      "tag": "held_out",
+      "expected_source_ids": [
+        "KB-ANT-001"
+      ],
+      "top_k_source_ids": [
+        "KB-ANT-001",
+        "KB-ANT-003",
+        "KB-DM-001",
+        "KB-ANT-004",
+        "KB-GST-001"
+      ],
+      "top1_score": 1.0801,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "高温高湿的天气是不是容易诱发炭疽病",
+      "tag": "held_out",
+      "expected_source_ids": [
+        "KB-ANT-002"
+      ],
+      "top_k_source_ids": [
+        "KB-ANT-002",
+        "KB-ANT-001",
+        "KB-ANT-003",
+        "KB-ANT-004",
+        "KB-GST-002"
+      ],
+      "top1_score": 0.996,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "黄瓜得了炭疽病应该怎么综合防治",
+      "tag": "held_out",
+      "expected_source_ids": [
+        "KB-ANT-003",
+        "KB-ANT-004"
+      ],
+      "top_k_source_ids": [
+        "KB-ANT-003",
+        "KB-ANT-004",
+        "KB-ANT-001",
+        "KB-PM-003",
+        "KB-GST-003"
+      ],
+      "top1_score": 0.9101,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "炭疽病用药方面有哪些讲究",
+      "tag": "held_out",
+      "expected_source_ids": [
+        "KB-ANT-005"
+      ],
+      "top_k_source_ids": [
+        "KB-ANT-003",
+        "KB-ANT-004",
+        "KB-ANT-001",
+        "KB-GST-003",
+        "KB-PM-003"
+      ],
+      "top1_score": 0.8883,
+      "first_relevant_rank": null,
+      "top1_hit": false,
+      "safety_related": true
+    },
+    {
+      "query": "黄瓜茎蔓开裂、流胶是怎么回事",
+      "tag": "held_out",
+      "expected_source_ids": [
+        "KB-GST-001"
+      ],
+      "top_k_source_ids": [
+        "KB-GST-001",
+        "KB-GST-003",
+        "KB-GST-002",
+        "KB-GST-004",
+        "KB-ANT-001"
+      ],
+      "top1_score": 0.9258,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "蔓枯病通常在什么条件下会大面积流行",
+      "tag": "held_out",
+      "expected_source_ids": [
+        "KB-GST-002"
+      ],
+      "top_k_source_ids": [
+        "KB-GST-002",
+        "KB-GST-003",
+        "KB-GST-001",
+        "KB-PM-002",
+        "KB-DM-002"
+      ],
+      "top1_score": 1.0531,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "蔓枯病有哪些药剂可以打",
+      "tag": "held_out",
+      "expected_source_ids": [
+        "KB-GST-004"
+      ],
+      "top_k_source_ids": [
+        "KB-GST-004",
+        "KB-GST-003",
+        "KB-GST-005",
+        "KB-GST-002",
+        "KB-ANT-004"
+      ],
+      "top1_score": 0.9559,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "如何用农业和生物手段来防治蔓枯病",
+      "tag": "held_out",
+      "expected_source_ids": [
+        "KB-GST-003"
+      ],
+      "top_k_source_ids": [
+        "KB-GST-003",
+        "KB-GST-002",
+        "KB-GST-005",
+        "KB-ANT-003",
+        "KB-DM-003"
+      ],
+      "top1_score": 0.9805,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "正常健康的黄瓜叶子应该是什么状态",
+      "tag": "held_out",
+      "expected_source_ids": [
+        "KB-HL-001"
+      ],
+      "top_k_source_ids": [
+        "KB-HL-001",
+        "KB-HL-004",
+        "KB-HL-002",
+        "KB-DM-001",
+        "KB-ANT-001"
+      ],
+      "top1_score": 0.9746,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "黄瓜喷过药之后要隔多少天才能摘来吃",
+      "tag": "held_out",
+      "expected_source_ids": [
+        "KB-SAFE-001"
+      ],
+      "top_k_source_ids": [
+        "KB-SAFE-001",
+        "KB-SAFE-002",
+        "KB-ANT-003",
+        "KB-ANT-004",
+        "KB-GST-003"
+      ],
+      "top1_score": 0.6636,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": true
+    },
+    {
+      "query": "种黄瓜有哪些农药是明令禁止或限制使用的",
+      "tag": "held_out",
+      "expected_source_ids": [
+        "KB-SAFE-002"
+      ],
+      "top_k_source_ids": [
+        "KB-SAFE-002",
+        "KB-SAFE-001",
+        "KB-ANT-003",
+        "KB-DM-003",
+        "KB-GST-003"
+      ],
+      "top1_score": 0.8363,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": true
+    },
+    {
+      "query": "杀菌剂为什么要轮换着使用",
+      "tag": "held_out",
+      "expected_source_ids": [
+        "KB-SAFE-003"
+      ],
+      "top_k_source_ids": [
+        "KB-SAFE-003",
+        "KB-DM-005",
+        "KB-DM-004",
+        "KB-GST-005",
+        "KB-ANT-004"
+      ],
+      "top1_score": 0.7806,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": true
+    }
+  ]
+}

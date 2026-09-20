@@ -21,3 +21,10 @@ httpx==0.28.1              # monitor/performance_monitor.py webhook 告警
 
 # ── 工具 ──────────────────────────────────────────────────────────────────────
 python-dotenv==1.0.1
+
+# ── RAG 中文向量（可选；缺失时知识库自动回退 Chroma 默认英文 embedding）─────────
+# 对应 docs/评测报告_RAG对照实验_20260920.md 的 V4 口径；torch 请装 CPU 版：
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+transformers==4.45.2       # BGE bge-small-zh-v1.5 推理后端（BertModel + CLS pooling）
+tokenizers==0.20.3         # 与 transformers 4.45 匹配的版本
+safetensors==0.7.0         # BGE 权重格式

@@ -1,0 +1,499 @@
+{
+  "eval_meta": {
+    "version": "v4",
+    "version_desc": "v3 + 关键词混合检索（确定性重排）",
+    "config": {
+      "embedding_model": "bge-small-zh-v1.5",
+      "alias_norm": true,
+      "hybrid": true,
+      "desc": "v3 + 关键词混合检索（确定性重排）"
+    },
+    "git_commit": "17ae521b3791f3f9ff18f537f79707923fa34bad",
+    "embedding_model": "BAAI/bge-small-zh-v1.5 (cpu, local cache)",
+    "cases_file": "D:\\研究生\\企业级项目的构建\\cucumber-diagnosis-platform\\cucumber-agent\\echomind\\evaluation\\eval_cases.json",
+    "cases_version": "2026-09-20",
+    "cases_split": "dev",
+    "rag_cases_total": 26,
+    "answerable_denominator": 23,
+    "adversarial_excluded": 3,
+    "date": "2026-09-20"
+  },
+  "metrics": {
+    "answerable_total": 23,
+    "recall_at_1": 0.8261,
+    "recall_at_3": 0.913,
+    "recall_at_5": 0.9565,
+    "mrr": 0.8783,
+    "top1_source_accuracy": 0.8261,
+    "avg_query_latency_ms": 8.3,
+    "cold_start_s": 2.36,
+    "model_size_mb": 91.9,
+    "memory_rss_delta_mb": 413.4,
+    "safety_subset": {
+      "n": 6,
+      "recall_at_5": 0.8333,
+      "top1_source_accuracy": 0.6667
+    },
+    "adversarial_top1_score_avg": 0.7029
+  },
+  "details": [
+    {
+      "query": "黄瓜霜霉病的典型症状有哪些",
+      "tag": "answerable",
+      "expected_source_ids": [
+        "KB-DM-001"
+      ],
+      "top_k_source_ids": [
+        "KB-DM-001",
+        "KB-DM-004",
+        "KB-DM-003",
+        "KB-ANT-001",
+        "KB-GST-001"
+      ],
+      "top1_score": 0.9992,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "霜霉病叶片背面霉层特征",
+      "tag": "answerable",
+      "expected_source_ids": [
+        "KB-DM-001"
+      ],
+      "top_k_source_ids": [
+        "KB-DM-001",
+        "KB-HL-001",
+        "KB-DM-002",
+        "KB-PM-001",
+        "KB-ANT-001"
+      ],
+      "top1_score": 1.07,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "霜霉病的发病温湿度条件",
+      "tag": "answerable",
+      "expected_source_ids": [
+        "KB-DM-002"
+      ],
+      "top_k_source_ids": [
+        "KB-DM-002",
+        "KB-DM-001",
+        "KB-PM-002",
+        "KB-DM-003",
+        "KB-GST-002"
+      ],
+      "top1_score": 1.0232,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "霜霉病怎么通过栽培措施预防",
+      "tag": "answerable",
+      "expected_source_ids": [
+        "KB-DM-003"
+      ],
+      "top_k_source_ids": [
+        "KB-DM-003",
+        "KB-DM-004",
+        "KB-DM-002",
+        "KB-DM-001",
+        "KB-ANT-003"
+      ],
+      "top1_score": 0.9523,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "霜霉病化学防治药剂选择",
+      "tag": "answerable",
+      "expected_source_ids": [
+        "KB-DM-004"
+      ],
+      "top_k_source_ids": [
+        "KB-DM-004",
+        "KB-DM-003",
+        "KB-DM-005",
+        "KB-PM-004",
+        "KB-ANT-004"
+      ],
+      "top1_score": 0.9566,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "霜霉病用药注意事项与抗性管理",
+      "tag": "answerable",
+      "expected_source_ids": [
+        "KB-DM-005",
+        "KB-SAFE-003"
+      ],
+      "top_k_source_ids": [
+        "KB-DM-005",
+        "KB-DM-004",
+        "KB-DM-003",
+        "KB-PM-005",
+        "KB-GST-005"
+      ],
+      "top1_score": 0.9523,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": true
+    },
+    {
+      "query": "黄瓜白粉病症状识别",
+      "tag": "answerable",
+      "expected_source_ids": [
+        "KB-PM-001"
+      ],
+      "top_k_source_ids": [
+        "KB-PM-001",
+        "KB-PM-005",
+        "KB-PM-004",
+        "KB-PM-003",
+        "KB-ANT-001"
+      ],
+      "top1_score": 0.9984,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "白粉病发病条件",
+      "tag": "answerable",
+      "expected_source_ids": [
+        "KB-PM-002"
+      ],
+      "top_k_source_ids": [
+        "KB-PM-002",
+        "KB-PM-001",
+        "KB-PM-005",
+        "KB-PM-003",
+        "KB-GST-002"
+      ],
+      "top1_score": 0.9554,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "白粉病农业防治",
+      "tag": "answerable",
+      "expected_source_ids": [
+        "KB-PM-003"
+      ],
+      "top_k_source_ids": [
+        "KB-PM-003",
+        "KB-PM-005",
+        "KB-PM-001",
+        "KB-PM-004",
+        "KB-GST-003"
+      ],
+      "top1_score": 0.9138,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "白粉病化学防治方案",
+      "tag": "answerable",
+      "expected_source_ids": [
+        "KB-PM-004"
+      ],
+      "top_k_source_ids": [
+        "KB-PM-005",
+        "KB-PM-004",
+        "KB-PM-003",
+        "KB-PM-001",
+        "KB-HL-004"
+      ],
+      "top1_score": 0.883,
+      "first_relevant_rank": 2,
+      "top1_hit": false,
+      "safety_related": false
+    },
+    {
+      "query": "白粉病用药注意事项",
+      "tag": "answerable",
+      "expected_source_ids": [
+        "KB-PM-005"
+      ],
+      "top_k_source_ids": [
+        "KB-PM-005",
+        "KB-PM-001",
+        "KB-PM-004",
+        "KB-PM-003",
+        "KB-SAFE-002"
+      ],
+      "top1_score": 1.0268,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": true
+    },
+    {
+      "query": "黄瓜炭疽病症状",
+      "tag": "answerable",
+      "expected_source_ids": [
+        "KB-ANT-001"
+      ],
+      "top_k_source_ids": [
+        "KB-ANT-001",
+        "KB-ANT-004",
+        "KB-ANT-003",
+        "KB-DM-001",
+        "KB-PM-001"
+      ],
+      "top1_score": 1.0033,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "炭疽病发病条件",
+      "tag": "answerable",
+      "expected_source_ids": [
+        "KB-ANT-002"
+      ],
+      "top_k_source_ids": [
+        "KB-ANT-002",
+        "KB-ANT-001",
+        "KB-ANT-003",
+        "KB-ANT-004",
+        "KB-GST-002"
+      ],
+      "top1_score": 0.9328,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "炭疽病防治方法",
+      "tag": "answerable",
+      "expected_source_ids": [
+        "KB-ANT-003",
+        "KB-ANT-004"
+      ],
+      "top_k_source_ids": [
+        "KB-ANT-003",
+        "KB-ANT-001",
+        "KB-ANT-004",
+        "KB-GST-003",
+        "KB-PM-003"
+      ],
+      "top1_score": 0.8866,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "炭疽病用药注意",
+      "tag": "answerable",
+      "expected_source_ids": [
+        "KB-ANT-005"
+      ],
+      "top_k_source_ids": [
+        "KB-ANT-004",
+        "KB-ANT-003",
+        "KB-ANT-001",
+        "KB-GST-003",
+        "KB-PM-003"
+      ],
+      "top1_score": 0.8944,
+      "first_relevant_rank": null,
+      "top1_hit": false,
+      "safety_related": true
+    },
+    {
+      "query": "黄瓜蔓枯病症状识别",
+      "tag": "answerable",
+      "expected_source_ids": [
+        "KB-GST-001"
+      ],
+      "top_k_source_ids": [
+        "KB-GST-001",
+        "KB-GST-003",
+        "KB-GST-002",
+        "KB-GST-004",
+        "KB-DM-001"
+      ],
+      "top1_score": 0.9144,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "蔓枯病发病条件",
+      "tag": "answerable",
+      "expected_source_ids": [
+        "KB-GST-002"
+      ],
+      "top_k_source_ids": [
+        "KB-GST-002",
+        "KB-GST-003",
+        "KB-GST-001",
+        "KB-GST-005",
+        "KB-PM-002"
+      ],
+      "top1_score": 1.0731,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "蔓枯病化学防治",
+      "tag": "answerable",
+      "expected_source_ids": [
+        "KB-GST-004"
+      ],
+      "top_k_source_ids": [
+        "KB-GST-003",
+        "KB-GST-004",
+        "KB-GST-002",
+        "KB-GST-005",
+        "KB-HL-004"
+      ],
+      "top1_score": 0.9045,
+      "first_relevant_rank": 2,
+      "top1_hit": false,
+      "safety_related": false
+    },
+    {
+      "query": "蔓枯病农业与生物防治",
+      "tag": "answerable",
+      "expected_source_ids": [
+        "KB-GST-003"
+      ],
+      "top_k_source_ids": [
+        "KB-GST-003",
+        "KB-GST-002",
+        "KB-GST-005",
+        "KB-ANT-003",
+        "KB-DM-003"
+      ],
+      "top1_score": 0.9849,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "健康黄瓜叶片的特征",
+      "tag": "answerable",
+      "expected_source_ids": [
+        "KB-HL-001"
+      ],
+      "top_k_source_ids": [
+        "KB-HL-001",
+        "KB-HL-004",
+        "KB-HL-002",
+        "KB-DM-001",
+        "KB-GST-001"
+      ],
+      "top1_score": 0.9658,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": false
+    },
+    {
+      "query": "农药安全间隔期通用规范",
+      "tag": "answerable",
+      "expected_source_ids": [
+        "KB-SAFE-001"
+      ],
+      "top_k_source_ids": [
+        "KB-DM-005",
+        "KB-GST-005",
+        "KB-ANT-005",
+        "KB-PM-005",
+        "KB-SAFE-001"
+      ],
+      "top1_score": 0.8947,
+      "first_relevant_rank": 5,
+      "top1_hit": false,
+      "safety_related": true
+    },
+    {
+      "query": "黄瓜禁限用农药有哪些",
+      "tag": "answerable",
+      "expected_source_ids": [
+        "KB-SAFE-002"
+      ],
+      "top_k_source_ids": [
+        "KB-SAFE-002",
+        "KB-SAFE-001",
+        "KB-ANT-003",
+        "KB-PM-003",
+        "KB-GST-003"
+      ],
+      "top1_score": 0.8106,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": true
+    },
+    {
+      "query": "杀菌剂轮换使用原则",
+      "tag": "answerable",
+      "expected_source_ids": [
+        "KB-SAFE-003"
+      ],
+      "top_k_source_ids": [
+        "KB-SAFE-003",
+        "KB-DM-005",
+        "KB-GST-005",
+        "KB-DM-004",
+        "KB-ANT-005"
+      ],
+      "top1_score": 0.7636,
+      "first_relevant_rank": 1,
+      "top1_hit": true,
+      "safety_related": true
+    },
+    {
+      "query": "番茄晚疫病怎么防治",
+      "tag": "adversarial_out_of_domain",
+      "expected_source_ids": [],
+      "top_k_source_ids": [
+        "KB-DM-003",
+        "KB-GST-003",
+        "KB-ANT-003",
+        "KB-PM-003",
+        "KB-DM-004"
+      ],
+      "top1_score": 0.559,
+      "first_relevant_rank": null
+    },
+    {
+      "query": "黄瓜今天市场价格多少",
+      "tag": "adversarial_out_of_domain",
+      "expected_source_ids": [],
+      "top_k_source_ids": [
+        "KB-SAFE-002",
+        "KB-SAFE-001",
+        "KB-GST-002",
+        "KB-HL-002",
+        "KB-ANT-002"
+      ],
+      "top1_score": 0.5704,
+      "first_relevant_rank": null
+    },
+    {
+      "query": "葡萄霜霉病的症状",
+      "tag": "adversarial_out_of_domain",
+      "expected_source_ids": [],
+      "top_k_source_ids": [
+        "KB-DM-001",
+        "KB-DM-004",
+        "KB-DM-003",
+        "KB-ANT-001",
+        "KB-PM-001"
+      ],
+      "top1_score": 0.9794,
+      "first_relevant_rank": null
+    }
+  ]
+}
