@@ -8,7 +8,7 @@
 |---|---|
 | 诊断是否为 Mock | **否（全链路真实）**。检测：E2_gfix 论文冻结权重（`E2_gfix:ch4v22` ACTIVE）；报告：论文 agent_v1 受控生成流水线（六步），LLM 润色默认 **Kimi k3**（论文第六章同端点），12 项校验 + 确定性骨架回退；智能体：DeepSeek `deepseek-flash` |
 | 已验证运行环境 | Windows 11 本地：便携 PostgreSQL 16.10 + 便携 Redis 5.0.14 + JDK 17.0.2 + Node 24 + Python 3.9 venv（torch 2.8.0 + vendor ultralytics 8.4.90）；**Docker 未安装，compose 链路未验证** |
-| 已通过测试 | 浏览器主链路 17/17（d1）；异常场景 17/17（d2）；**ai pytest 26 passed**（含受控生成 24 项迁移测试）；agent pytest 13 passed；**admin mvn test 36 项全绿**；web `npm run build` 绿（含 vue-tsc type-check 前置） |
+| 已通过测试 | 浏览器主链路 17/17（d1）；异常场景 17/17（d2）；**ai pytest 37 passed**（受控生成 24 项迁移测试 + 症状链路/INCONCLUSIVE 11 项）；agent pytest 13 passed；**admin mvn test 38 项全绿**；web `npm run build` 绿（含 vue-tsc type-check 前置） |
 | 真实链路实测 | test301 检测冒烟：100% 有检出、均值 57ms；Kimi k3 真实润色：报告 status=polished、来源 9-11 个真实 KB 编号、端到端 40-50s（含纠错重润）；低置信（空白图）→ 健康叶 0.0 → 自动复核单创建 → 专家页"低置信复核"标签 |
 | 下一阶段入口 | ~~评测数据补充（agent `/eval/run` 真实跑分）~~（已完成，2026-09-20 全量评测，见 docs/评测报告_20260920.md）/ Docker 全栈 / 奶牛项目 |
 
@@ -32,6 +32,8 @@
 16. 面试官视角强化（2026-09-18）：**cucumber-admin 单元测试 36 项**（诊断去重/权限边界/文件类型/AI 宕机/反馈流转/低置信复核/模型激活互斥/日志查询 + 智能体对话转发与审计/登录签发 JWT/JWT 过期与篡改验签/MQ 生产消费成败路径，mvn test 全绿）；**操作日志前端查询页**（系统管理→操作日志，admin 权限，菜单按权过滤）；来源弹窗加载骨架屏（消除"未查询到"闪现）。
 17. 全量评测落地（2026-09-20）：评测集扩充至 **108 意图 + 22 对话 + 26 RAG 用例**（`echomind/evaluation/eval_cases.json`，含跨病害混淆/紧急措辞/禁限用诱导/非黄瓜对抗样本），配套脚本 `run_full_eval.py` 直调 evaluator 真实跑分（DeepSeek deepseek-chat，约 4.5 分钟）：意图 Accuracy 98.15%（106/108）、Macro-F1 0.9845，Judge 六维 0.77-1.00（medication_safety 满分，judge_failed=0——09-14 Judge 全失败的根因是 deepseek-flash 端点不可用，已改用 deepseek-chat），综合通过率 93.33%，回归对比无退化；RAG 裸检索 Recall@5=0.2609（28 条种子 + 内置英文 embedding 的真实下限，改进方向已记录）。报告 `docs/评测报告_20260920.md` + 原始 JSON/日志；同步建立 `prompts/` 登记册（12 个 prompt 的用途/模型/温度/代码位置/关联评测）与 `docs/interview.md` 面试手册。
 18. 诊断上传页重构与浏览器实证（2026-09-20）：**候选排序列表**（detections 按类别聚合 top-N，点击联动检测框高亮/半透明）、**三 tab 结果区**（图文依据/诊断说明/下一步建议）、**不确定性提示条**（首位 <65% 或与次位分差 <20%，阈值注释对齐后端 0.75 自动复核口径）、候选对比弹窗、扫描加载动画（三阶段文案 + 可取消，runId 令牌防迟到结果覆盖）、空态示例图引导（真实叶片图走完整诊断流）、症状快捷 chips + 输入修改后重诊提醒、TXT 报告导出；**验收脚本入库 `acceptance/`**（d1/d2/cucumber_eval_run/verify_upload_0920/verify_upload_blank），新增重构验证 11/11 通过 + 空白图"未检出"降级验证通过，实证截图 `docs/screenshots/diagnosis-candidates.png`、`diagnosis-blank.png`。
+19. 症状端到端与无检出语义（2026-09-20 晚，17ae521）：**症状参数全链路**——前端 chips/输入 → admin 透传（兼容不传）→ ai 校验（去重/≤10 条/单条 ≤50 字/指令注入样式整条剔除）→ build_evidence 纳入"症状线索"进报告 basis，**protected 字段零接触用户文本**，症状与检测类别冲突时以模型为准并在 uncertainty_note 标注分歧；**无检出语义修正**——"健康叶 0.0"改为独立 `diagnosis_status=INCONCLUSIVE`（disease_type/confidence=null、requires_review=true、专属 uncertainty_note，不进 LLM 流水线），DIAGNOSED/UNCERTAIN/INCONCLUSIVE/FAILED 四态分立，自动复核单行为不变；ai pytest 26→**37**、admin mvn test 36→**38** 全绿，前端对 INCONCLUSIVE 展示"信息不足，无法判定"。
+20. **RAG 检索对照实验**（2026-09-20 晚，9e2a2c4，报告 `docs/评测报告_RAG对照实验_20260920.md`）：同一冻结评测集（23 可答 + 3 域外对抗 + 23 条同义改写 held-out 防过拟合）四版对照——V1 英文 embedding 基线 Recall@5=0.2609/Top-1=0.0435 → V2 bge-small-zh-v1.5 0.7391/0.3478 → V3 +别名归一化 0.6957/0.3043 → **V4 +关键词混合重排 0.9565/0.8261**（安全类子集 0.1667→0.8333 不退化）；held-out 集复现提升不过拟合；运行时检索缺省切至 V4（接口不变，缺依赖自动回退基线），agent pytest 13 项保持全绿；复现命令 `python -m evaluation.run_retrieval --version vN [--held-out]`（输出 JSON+MD，记录 commit/模型/用例数/有效分母）。
 
 ## 正在开发（下一阶段）
 
