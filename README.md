@@ -2,7 +2,7 @@
 
 > 基于计算机视觉、多模态知识增强与自主 Agent Runtime 构建的农业 AI 诊断平台。系统以自主设计的 **EchoMind 多 Agent 编排运行时**为智能中枢，融合改进 YOLO、RAG、LLM 受控生成与专家反馈机制，实现从图像识别、知识检索到智能决策的完整 AI 应用闭环。
 >
-> 当前版本 **v0.3.0**：检测与报告均为**真实链路**（内置冻结权重与训练侧运行时），项目状态详见 [PROJECT_STATUS.md](PROJECT_STATUS.md)。
+> 当前版本 **v0.3.0**：检测与报告均为**非 Mock 链路**（内置冻结权重与训练侧运行时），项目状态详见 [PROJECT_STATUS.md](PROJECT_STATUS.md)。
 
 ```text
 黄瓜叶片图像输入
@@ -27,7 +27,7 @@ EchoMind 多 Agent 协作诊断
 
 ![平台演示（46 秒 GIF：登录 → 上传诊断 → 多候选结果 → 来源追溯 → 智能体问答）](docs/screenshots/demo-cucumber-20260920.gif)
 
-![真实检测与诊断报告](docs/screenshots/real-model-upload.png)
+![检测与诊断报告](docs/screenshots/real-model-upload.png)
 
 | 知识来源追溯 | 低置信自动复核 | 农技诊断 Agent |
 | --- | --- | --- |
@@ -166,10 +166,10 @@ docker compose up -d --build
 
 前置：本地需有 PostgreSQL（建库 `cucumber_db` 并执行 `cucumber-admin/src/main/resources/db/schema.sql`）与 Redis。
 
-> **无 Docker 环境实测路径（2026-09-12 验收通过）**：便携 PostgreSQL 16.10（initdb -A trust -E UTF8 --locale=C，注意必须经 `pg_ctl start` 启动，直接跑 postgres.exe 会被管理员权限拒绝）+ 便携 Redis 5.0.14（`redis-server --port 6379`）即可满足前置依赖。完整验证记录见 [docs/验收报告_20260912.md](docs/验收报告_20260912.md)。
+> **无 Docker 本地运行路径**：便携 PostgreSQL 16.10（initdb -A trust -E UTF8 --locale=C，注意必须经 `pg_ctl start` 启动，直接跑 postgres.exe 会被管理员权限拒绝）+ 便携 Redis 5.0.14（`redis-server --port 6379`）即可满足前置依赖。完整验证记录见 [docs/验收报告_20260912.md](docs/验收报告_20260912.md)。
 
 ```bash
-# 1. AI 服务（Python 3.9+；仓库已内置 E2_gfix 权重与 vendor 运行时，开箱即真实推理）
+# 1. AI 服务（Python 3.9+；仓库已内置 E2_gfix 权重与 vendor 运行时，开箱即可推理）
 cd cucumber-ai
 pip install -r requirements.txt
 # 报告润色默认走 Kimi k3：在 .env 写入 LLM_PROVIDER=kimi 与 KIMI_API_KEY；
@@ -212,14 +212,14 @@ cd echomind && ../.venv/Scripts/python -m uvicorn api.main:app --port 8002
 | E2_gfix 改进 YOLO11n 冻结权重（test301：P=92.48 / R=87.37 / mAP50=90.55） | `cucumber-ai/weights/E2_gfix.pt`（已入库）+ `app/services/detector.py` + `vendor/`（训练侧运行时 ultralytics 8.4.90 + 融合模块，checkpoint 必需） | ✅ 已接入：中文类别映射、CPU 推理 56-128ms、耗时透传展示；管理端"模型版本"页已登记激活 `E2_gfix:ch4v22`（含 sha256 与指标口径） |
 | 第六章受控生成工作流（检索→骨架→润色→12 项校验→纠错重润→骨架回退） | `app/services/`：`report.py`（六步流水线）+ `skeleton.py` + `validators.py` + `prompts.py` + `knowledge_store.py` | ✅ 已迁移：12 项事实一致性校验逐字保留（幻觉率 0.22% 的口径基础）；prompt 原文保留；交付率 100% 的骨架回退机制保留；报告带 `report_status` 与 `uncertainty_note` |
 | 论文知识库（4 病害 + 健康叶，28 个合法 source_id） | `cucumber-ai/data/disease_knowledge.json`（检索用嵌套结构）+ admin `knowledge_entry` 表（28 条扁平目录，`db/knowledge_seed.json` 种子） | ✅ 已对齐：报告引用的 source_id 全部可在业务库追溯原文；agent 知识库同源 |
-| 真实 LLM | `app/services/llm.py` | ✅ 已联调：Kimi k3（论文同端点，默认）/ DeepSeek V4.1 Flash（备用，同流水线同校验）；401 不重试、指数退避、trust_env=False 与论文一致 |
+| LLM 受控润色 | `app/services/llm.py` | ✅ 已联调：Kimi k3（论文同端点，默认）/ DeepSeek V4.1 Flash（备用，同流水线同校验）；401 不重试、指数退避、trust_env=False 与论文一致 |
 | 低置信门控（rule A + 0.75 阈值 + 冲突 flag） | 证据构建（`report.py`）+ admin 诊断链路 | ✅ 已闭环：检测最高置信度 < 0.75（含无检出）自动创建 UNCERTAIN 复核单，专家复核页专用标签 |
 | pgvector 向量检索 | `cucumber-ai/app/services/retriever.py` | ⏳ 后续规划（论文口径为类别显式映射，非向量检索；产品侧增强） |
-| 评测数据补充（agent `/eval/run` 真实跑分） | `cucumber-agent/echomind/evaluation/` | ⏳ 后续规划 |
+| 评测数据补充（agent `/eval/run` 跑分） | `cucumber-agent/echomind/evaluation/` | ✅ 已完成（见下方「评测结果」） |
 
 ## 核心链路
 
-登录（JWT）→ 上传叶片图片（内容哈希去重）→ E2_gfix 真实检测（病斑框/类别/置信度/耗时）→ 知识显式映射检索（28 个合法来源）→ 受控生成五段式报告（结论/依据/农艺/化防/安全 + 不确定性说明）→ 来源编号可追溯知识原文 → 低置信自动转专家复核 / 用户主动纠错反馈 → 专家复核闭环 → 操作日志与模型版本关联 → 看板统计。
+登录（JWT）→ 上传叶片图片（内容哈希去重）→ E2_gfix 检测（病斑框/类别/置信度/耗时）→ 知识显式映射检索（28 个合法来源）→ 受控生成五段式报告（结论/依据/农艺/化防/安全 + 不确定性说明）→ 来源编号可追溯知识原文 → 低置信自动转专家复核 / 用户主动纠错反馈 → 专家复核闭环 → 操作日志与模型版本关联 → 看板统计。
 
 智能体链路（cucumber-agent，EchoMind 农业领域化）：对话消息 → 三路融合意图识别 → 四角色 Agent 路由（诊断/防治/用药/人工升级，主辅并行 + Composer 合并）→ 工具治理层（缓存/熔断/改写重排）调平台 API → 带来源编号的回答 → Redis/Chroma 三层记忆 → 在线监控（Z-score + 路由罚分）与 LLM-as-Judge 评测。
 
@@ -254,10 +254,10 @@ cd echomind && ../.venv/Scripts/python -m uvicorn api.main:app --port 8002
 
 ```
 cucumber-diagnosis-platform/
-├── PROJECT_STATUS.md             # 三段式真实项目状态（已完成/正在开发/后续规划）
+├── PROJECT_STATUS.md             # 三段式项目状态（已完成/正在开发/后续规划）
 ├── docs/
 │   ├── 验收报告_20260912.md      # 全栈验收记录（浏览器 17 项 + 异常 17 项全过）
-│   └── screenshots/              # 本文档截图（均为真实运行截取）
+│   └── screenshots/              # 本文档截图（运行实录）
 ├── docker-compose.yml            # 一键编排（Docker 环境）
 ├── cucumber-admin/               # Spring Boot 业务后端（JWT/RBAC/诊断/反馈/知识库/模型/统计/智能体代理审计）
 │   └── src/main/resources/db/    # schema.sql + knowledge_seed.json（28 条知识种子）
@@ -277,9 +277,9 @@ cucumber-diagnosis-platform/
 
 ## 状态与边界说明
 
-- 检测（E2_gfix）与报告（受控生成）均为**真实链路**；LLM 未配置时自动降级为确定性骨架（`report_status=fallback_to_skeleton`），链路始终可交付。
+- 检测（E2_gfix）与报告（受控生成）均为**非 Mock 链路**；LLM 未配置时自动降级为确定性骨架（`report_status=fallback_to_skeleton`），链路始终可交付。
 - Docker compose 编排与 RabbitMQ 异步诊断链路**尚未在本机验证**（本机无 Docker，当前均为便携件本地直跑）；其余链路均有浏览器级与接口级验证记录（docs/验收报告_20260912.md）。
-- 本项目为持续开发中的秋招作品集项目，不声称商业落地或大规模生产验证；指标数字均标注口径（见模型版本页与 PROJECT_STATUS.md）。
+- 本项目为持续开发中的作品集项目，不声称商业落地或大规模生产验证；指标数字均标注口径（见模型版本页与 PROJECT_STATUS.md）。
 
 ## 多模态融合链路
 
@@ -307,7 +307,7 @@ Schema / 来源校验：12 项事实一致性校验（validators.py），
 
 ## RAG 来源追溯示例
 
-请求与响应结构与 `cucumber-ai/app/schemas/` 的 `DiagnoseRequest` / `DiagnosisReport` 一一对应（下例为真实链路的典型形态，`report_status=polished` 表示 LLM 润色通过 12 项校验）：
+请求与响应结构与 `cucumber-ai/app/schemas/` 的 `DiagnoseRequest` / `DiagnosisReport` 一一对应（下例为典型链路形态，`report_status=polished` 表示 LLM 润色通过 12 项校验）：
 
 ```jsonc
 // POST /api/v1/diagnose 请求（检测框来自 /detect 的真实输出）
@@ -339,7 +339,7 @@ Schema / 来源校验：12 项事实一致性校验（validators.py），
 
 ## 评测结果
 
-2026-09-20 全量评测（评测集 `cucumber-agent/echomind/evaluation/eval_cases.json`：108 意图 + 22 对话 + 26 RAG 用例，含跨病害混淆/紧急措辞/禁限用诱导/非黄瓜对抗样本；DeepSeek deepseek-chat，本机真实运行，完整口径与原始输出见 [docs/评测报告_20260920.md](docs/评测报告_20260920.md)）：
+2026-09-20 全量评测（评测集 `cucumber-agent/echomind/evaluation/eval_cases.json`：108 意图 + 22 对话 + 26 RAG 用例，含跨病害混淆/紧急措辞/禁限用诱导/非黄瓜对抗样本；DeepSeek deepseek-chat，完整口径与原始输出见 [docs/评测报告_20260920.md](docs/评测报告_20260920.md)）：
 
 | 指标 | 结果 |
 | --- | --- |
