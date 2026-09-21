@@ -2,7 +2,7 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 COPY package.json ./
-RUN npm install --no-audit --no-fund
+RUN npm install --no-audit --no-fund --registry=https://registry.npmmirror.com
 COPY . .
 RUN npm run build
 
