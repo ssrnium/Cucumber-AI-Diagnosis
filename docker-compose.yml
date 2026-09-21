@@ -4,6 +4,7 @@ services:
   db:
     image: pgvector/pgvector:pg16
     container_name: cucumber-db
+    restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -22,6 +23,7 @@ services:
   redis:
     image: redis:7-alpine
     container_name: cucumber-redis
+    restart: unless-stopped
     ports:
       - "6379:6379"
     volumes:
@@ -35,6 +37,7 @@ services:
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: cucumber-rabbitmq
+    restart: unless-stopped
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
@@ -50,9 +53,10 @@ services:
   cucumber-ai:
     build: ./cucumber-ai
     container_name: cucumber-ai
+    restart: unless-stopped
     environment:
-      # 本地一键起默认 mock 润色，便于无 Key 演示；生产置 deepseek 走真实 LLM 链路
-      LLM_PROVIDER: mock
+      # 本地一键起默认 mock 润色，便于无 Key 演示；服务器/生产经根级 .env 置 deepseek 走真实 LLM 链路
+      LLM_PROVIDER: ${LLM_PROVIDER:-mock}
       KIMI_API_KEY: ${KIMI_API_KEY:-}
     ports:
       - "8000:8000"
@@ -60,6 +64,7 @@ services:
   cucumber-admin:
     build: ./cucumber-admin
     container_name: cucumber-admin
+    restart: unless-stopped
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/cucumber_db?stringtype=unspecified
       SPRING_DATASOURCE_USERNAME: postgres
@@ -71,7 +76,7 @@ services:
       AI_BASE_URL: http://cucumber-ai:8000
       AGENT_BASE_URL: http://cucumber-agent:8002
       UPLOAD_DIR: /data/uploads
-      JWT_SECRET: cucumber-diagnosis-platform-jwt-secret-key-2026
+      JWT_SECRET: ${JWT_SECRET:-cucumber-diagnosis-platform-jwt-secret-key-2026}
       SVC_AGENT_PASSWORD: ${SVC_AGENT_PASSWORD:-SvcAgent@123}
       MQ_ENABLED: "true"
     ports:
@@ -91,6 +96,7 @@ services:
   cucumber-web:
     build: ./cucumber-web
     container_name: cucumber-web
+    restart: unless-stopped
     ports:
       - "8088:80"
     depends_on:
@@ -99,6 +105,7 @@ services:
   chromadb:
     image: chromadb/chroma:0.5.23
     container_name: cucumber-chromadb
+    restart: unless-stopped
     ports:
       - "8100:8000"
     volumes:
@@ -114,10 +121,11 @@ services:
       context: ./cucumber-agent/echomind
       target: production
     container_name: cucumber-agent
+    restart: unless-stopped
     environment:
       # Anthropic 兼容协议（DeepSeek）：API Key 由用户填写，不进仓库
       ANTHROPIC_BASE_URL: ${ANTHROPIC_BASE_URL:-https://api.deepseek.com/anthropic}
-      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-deepseek-flash}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-deepseek-chat}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       REDIS_URL: redis://redis:6379/0
       CHROMA_HOST: chromadb
@@ -145,6 +153,7 @@ services:
   prometheus:
     image: prom/prometheus:v2.55.1
     container_name: cucumber-prometheus
+    restart: unless-stopped
     profiles: ["monitor"]
     ports:
       - "9090:9090"
