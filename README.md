@@ -266,7 +266,7 @@ cucumber-diagnosis-platform/
 │   ├── vendor/                   # 训练侧运行时副本（ultralytics 8.4.90 + 融合模块，E2_gfix checkpoint 必需）
 │   ├── weights/E2_gfix.pt        # 论文冻结权重（已入库，sha256 d9e4ce25…）
 │   ├── data/disease_knowledge.json  # 论文嵌套知识库（28 个合法 source_id）
-│   └── tests/                    # pytest 26 项（含受控生成迁移测试）
+│   └── tests/                    # pytest 37 项（含受控生成迁移测试）
 ├── cucumber-agent/               # EchoMind Runtime 的农业领域应用（端口 8002）
 └── cucumber-web/                 # Vue3 前端（诊断/记录/复核/知识库/模型/系统/智能体）
 ```
@@ -350,11 +350,11 @@ Schema / 来源校验：12 项事实一致性校验（validators.py），
 | RAG Recall@5（裸检索口径，28 条种子库） | 0.2609（6/23），Top-1 source_id 命中率 0.0435 |
 | 回归对比（vs 2026-09-14 基线，退化 >5% 告警） | 无退化项 |
 
-口径说明：RAG 指标为**裸检索**（Chroma 内置英文 embedding，不含查询改写/重排），是检索能力下限而非线上表现，改进方向见评测报告第 5/8 节。**幻觉率 0.22% 为论文第六章既有口径**（受控生成 12 项事实一致性校验，`validators.py` 逐行移植），与上表 agent 评测是两套独立度量，不混淆。原"论文资产集成现状"表中的"评测数据补充"项已于 2026-09-20 完成。
+口径说明：RAG 指标为**裸检索**（Chroma 内置英文 embedding，不含查询改写/重排），是检索能力下限而非线上表现，改进方向见评测报告第 5/8 节。**幻觉率 0.22% 为论文第六章既有口径**（受控生成 12 项事实一致性校验，`validators.py` 逐行移植），与上表 agent 评测是两套独立度量，不混淆。
 
 ## Prompt 与版本管理
 
-平台所有 LLM prompt 当前硬编码在源码中（cucumber-ai 报告润色 2 个 + cucumber-agent 意图/Judge/四角色/Composer/改写/重排/记忆 10 个），已建立 **`prompts/` 登记册**（只登记、不重构）：每个 prompt 一个 yaml，记录 name / version / 用途 / 模型 / temperature / max_tokens / 代码位置 / 关联评测，变更需升版本并重跑关联评测。详见 [prompts/README.md](prompts/README.md)。
+平台所有 LLM prompt 当前硬编码在源码中（cucumber-ai 报告润色 2 个 + cucumber-agent 意图/Judge/四角色/Composer/改写/重排/记忆 10 个），已建立 **`prompts/` 登记册**（只登记、不改动）：每个 prompt 一个 yaml，记录 name / version / 用途 / 模型 / temperature / max_tokens / 代码位置 / 关联评测，变更需升版本并重跑关联评测。详见 [prompts/README.md](prompts/README.md)。
 
 ## 一句话总结
 
